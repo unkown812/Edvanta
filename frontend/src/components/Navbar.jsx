@@ -75,22 +75,18 @@ export const Navbar = ({ onToggleMenu }) => {
             )}
 
             <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="LMS Portal home">
-              <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-on-primary">
-                <DashboardOutlined />
+              <span className="flex h-8 w-8 items-center justify-center rounded-sm">
+                {/* <DashboardOutlined /> */}
+                <img src="favicon.png" alt="" />
               </span>
-              <span className="text-body-md-strong tracking-[-0.02em] text-ink">lms.portal</span>
+              <span className="text-body-md-strong tracking-[-0.02em] text-ink">
+                <img src="namebrand.png" alt="" height={100} width={160} />
+              </span>
             </Link>
 
             {/* Desktop link row */}
             <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
-              <Link to="/courses" className={linkClass('/courses')}>
-                Explore Courses
-              </Link>
-              {isAuthenticated && (
-                <Link to={getDashboardPath()} className={linkClass(getDashboardPath())}>
-                  Dashboard
-                </Link>
-              )}
+              
               {isAuthenticated && role === ROLES.INSTRUCTOR && (
                 <Link
                   to="/instructor/courses/new"

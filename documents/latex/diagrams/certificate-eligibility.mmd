@@ -1,0 +1,11 @@
+flowchart TD
+    START["POST /api/v1/courses/{courseId}/certificate<br/>authenticated user"] --> EX{"Certificate already exists?"}
+    EX -->|"Yes"| RET["Return existing certificate (idempotent)"]
+    EX -->|"No"| ENR{"Enrolled in course?<br/>enrollments row required"}
+    ENR -->|"No"| ERR1["400 BadRequest<br/>'You are not enrolled in this course'"]
+    ENR -->|"Yes"| LES{"Course has lessons?<br/>all lessons completed?"}
+    LES -->|"No - some incomplete"| ERR2["400 BadRequest<br/>'completed X of Y lessons'"]
+    LES -->|"Yes - 100% complete<br/>or course has 0 lessons"| QZ{"Passed every quiz<br/>in the course?"}
+    QZ -->|"No - any quiz not passed"| ERR3["400 BadRequest<br/>'You must pass quiz title...'"]
+    QZ -->|"Yes - all passed<br/>or no quizzes"| GEN["Create certificate:<br/>code = LMS-XXXXXXXX-NNNN,<br/>grade = 'DISTINCTION',<br/>enrollment status = COMPLETED"]
+    GEN --> OK["201 ApiResponse CertificateResponse"]

@@ -1,0 +1,179 @@
+\section{Business Requirements Document (BRD)}
+\label{sec:brd}
+
+\subsection{Document purpose}
+This BRD records the business-level requirements that can be derived from the repository: \pathref{README.md} (objectives, roles), \pathref{CONTRACT.md} (scope, exclusions, Definition of Done) and the implemented behaviour of the code. No revenue model, customer list, market data or KPI targets exist anywhere in the repository; such items are marked \status{UNKNOWN}.
+
+\subsection{Business problem}
+\status{INFERRED (from README objectives and implemented scope)}
+
+Educational content delivery, learner assessment, progress record-keeping and credential issuance are fragmented across tools. The repository exists to provide a single platform covering the complete cycle:
+
+\begin{center}
+\texttt{Registration $\rightarrow$ Discovery $\rightarrow$ Enrollment $\rightarrow$ Learning $\rightarrow$ Assessment $\rightarrow$ Evaluation $\rightarrow$ Completion $\rightarrow$ Certificate}
+\end{center}
+
+\noindent This lifecycle is stated verbatim in \pathref{README.md} and \pathref{CONTRACT.md} section~1 and implemented in code.
+
+\subsection{Business objectives}
+\status{IMPLEMENTED (objectives as declared in README.md; implementation status verified below)}
+
+\begin{table}[H]
+\centering
+\caption{Declared objectives versus implementation status}
+\label{tab:brd-objectives}
+\begin{tabular}{@{}L{7.6cm}C{3.0cm}L{3.0cm}@{}}
+\toprule
+\textbf{Objective (README)} & \textbf{Status} & \textbf{Evidence} \\
+\midrule
+Centralised platform for online learning & IMPLEMENTED & Single SPA + API + database \\
+User registration and enrolment & IMPLEMENTED & AuthController, EnrollmentService \\
+Structured course content and materials & IMPLEMENTED & Lesson entity (URL + rich text) \\
+Learner progress tracking & IMPLEMENTED & ProgressService, progress table \\
+Online assessments and quizzes & IMPLEMENTED & QuizService, quiz tables \\
+Performance recording and display & IMPLEMENTED & QuizAttempt, QuizResult UI \\
+Communication around courses & IMPLEMENTED & DiscussionService, DiscussionList \\
+Instructor content management tools & IMPLEMENTED & InstructorDashboard \\
+Centralised system administration & IMPLEMENTED & AdminDashboard, UserController \\
+Certificates after completion & IMPLEMENTED & CertificateService (eligibility enforced) \\
+Secure authentication and RBAC & IMPLEMENTED & Spring Security + \code{@PreAuthorize} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Stakeholders}
+\status{IMPLEMENTED (roles) / INFERRED (interest)}
+
+\begin{table}[H]
+\centering
+\caption{Stakeholder map}
+\label{tab:stakeholders}
+\begin{tabular}{@{}L{3.6cm}L{4.4cm}L{5.6cm}@{}}
+\toprule
+\textbf{Stakeholder} & \textbf{Role in project} & \textbf{Interest} \\
+\midrule
+Learner (end user) & Platform user & Complete courses, pass assessments, hold certificates \\
+Instructor (content owner) & Platform user & Author and publish content, monitor submissions \\
+Administrator & Platform operator & Curate catalogue, manage users, enforce policy \\
+Frontend workstream (Jay) & Code owner per \pathref{CONTRACT.md} & UI/UX quality, frontend tests, integration \\
+Backend workstream (Ali) & Code owner per \pathref{CONTRACT.md} & API contract, security, schema, backend tests \\
+AI coding agents & Assisted contributors & Must obey \pathref{CONTRACT.md} section 26 rules \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{User groups}
+\status{IMPLEMENTED}
+
+The three user groups map directly to the \code{users.role} column (\pathref{database/schema.sql}) and to route-level restrictions in \pathref{frontend/src/routes/AppRoutes.jsx} plus server-side rules in \pathref{backend/src/main/java/com/example/lms/config/SecurityConfig.java}. Their permissions are tabulated in Section~\ref{sec:authorization}.
+
+\subsection{Business processes}
+\status{IMPLEMENTED}
+
+\begin{enumerate}
+    \item \textbf{Learner acquisition:} register $\rightarrow$ verify email-uniqueness $\rightarrow$ receive JWT $\rightarrow$ browse $\rightarrow$ enrol.
+    \item \textbf{Content publishing:} instructor creates course (DRAFT) $\rightarrow$ adds ordered lessons $\rightarrow$ authors quiz + questions $\rightarrow$ sets status PUBLISHED $\rightarrow$ course becomes discoverable.
+    \item \textbf{Learning delivery:} enrol $\rightarrow$ open classroom $\rightarrow$ consume lesson (video/embed/text) $\rightarrow$ mark complete $\rightarrow$ progress recomputed.
+    \item \textbf{Assessment:} open quiz $\rightarrow$ answer under time limit $\rightarrow$ submit $\rightarrow$ server scores $\rightarrow$ result persisted and displayed with explanations.
+    \item \textbf{Credentialing:} all lessons complete + all quizzes passed $\rightarrow$ backend issues certificate $\rightarrow$ learner prints/saves from dashboard.
+    \item \textbf{Quality loop:} enrolled learners post discussions and one feedback rating per course; instructors view attempt results.
+\end{enumerate}
+
+\subsection{Business requirements}
+\status{IMPLEMENTED unless stated otherwise}
+
+\begin{table}[H]
+\centering
+\caption{Business requirements register}
+\label{tab:brd-requirements}
+\begin{tabular}{@{}C{1.4cm}L{9.0cm}C{3.6cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Status} \\
+\midrule
+BR-01 & The platform must serve learner, instructor and administrator roles in one system & IMPLEMENTED \\
+BR-02 & Learners must be able to self-register and immediately receive an authenticated session & IMPLEMENTED \\
+BR-03 & Only authorised users may create or modify courses and lessons & IMPLEMENTED \\
+BR-04 & Assessment results must be computed by the server, never trusted from the client & IMPLEMENTED \\
+BR-05 & Certificates must only be issued when completion requirements are met & IMPLEMENTED \\
+BR-06 & The system must prevent duplicate active enrolments and duplicate feedback & IMPLEMENTED \\
+BR-07 & The platform must be usable on desktop, tablet and mobile browsers & IMPLEMENTED (responsive classes; no formal audit) \\
+BR-08 & The product must be documented for engineering hand-over & IMPLEMENTED (this document) \\
+BR-09 & Payment, subscriptions and live classes are out of scope for v1.0 & IMPLEMENTED (excluded in \pathref{CONTRACT.md} 5.2) \\
+BR-10 & Business revenue, market-share or growth targets & UNKNOWN (not present in repository) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Expected outcomes}
+\status{IMPLEMENTED (product outcomes) / UNKNOWN (business outcomes)}
+
+\begin{itemize}
+    \item A learner can go from registration to a printable certificate without human intervention -- proven by \pathref{backend/src/test/java/com/example/lms/integration/LmsIntegrationTest.java}.
+    \item An instructor can publish a course with lessons and a quiz entirely through the UI.
+    \item An administrator can curate categories and review platform users and courses.
+    \item \textbf{Business} outcomes (enrolment volume, completion rates, revenue) are \status{UNKNOWN} -- the repository contains no analytics, telemetry or reporting pipeline.
+\end{itemize}
+
+\subsection{Success metrics}
+\status{UNKNOWN}
+
+No instrumentation for business metrics exists in the repository (no analytics package in \pathref{frontend/package.json}, no metrics/actuator dependency in \pathref{backend/pom.xml}, no reporting tables in \pathref{database/schema.sql}). The only measurable quality signals available today are:
+
+\begin{table}[H]
+\centering
+\caption{Available (engineering) success signals}
+\label{tab:brd-metrics}
+\begin{tabular}{@{}L{7.4cm}L{4.0cm}L{2.4cm}@{}}
+\toprule
+\textbf{Signal} & \textbf{Value} & \textbf{Status} \\
+\midrule
+Backend automated tests & 22 test methods across 10 classes & IMPLEMENTED \\
+Frontend automated tests & 39 test methods across 8 files & IMPLEMENTED \\
+End-to-end lifecycle test & 1 full-stack integration scenario & IMPLEMENTED \\
+Coverage measurement & none configured (no JaCoCo, no coverage script) & NOT PRESENT \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Constraints}
+\status{IMPLEMENTED (declared in repository documents)}
+
+\begin{itemize}
+    \item Two-person workstream ownership with strict directory boundaries (\pathref{CONTRACT.md} sections 3 and 27).
+    \item Fixed technology baseline; major replacements require both contributors' agreement (\pathref{CONTRACT.md} section 2).
+    \item Feature work must not alter APIs or schema without coordinated change management (sections 29--30).
+    \item Frontend route guards are explicitly \emph{not} security boundaries -- enforcement is a backend duty (section 13).
+    \item No licence file exists despite an MIT claim in \pathref{README.md} (legal constraint gap).
+\end{itemize}
+
+\subsection{Assumptions}
+\status{INFERRED}
+
+\begin{enumerate}
+    \item MySQL is available to developers at \code{localhost:3306} with credentials supplied via environment (per \pathref{.env.example}).
+    \item The application is single-tenant (no multi-tenant requirement appears anywhere).
+    \item English is the only locale (no i18n files exist).
+    \item HTTPS termination, if any, is handled outside the repository (no TLS configuration exists).
+\end{enumerate}
+
+\subsection{Risks}
+\status{IMPLEMENTED (verified conditions)}
+
+\begin{table}[H]
+\centering
+\caption{Business-facing risks with repository evidence}
+\label{tab:brd-risks}
+\begin{tabular}{@{}C{1.6cm}L{12.2cm}@{}}
+\toprule
+\textbf{Severity} & \textbf{Risk} \\
+\midrule
+Critical & Self-registration can mint ADMIN accounts (\code{role} honoured in \pathref{backend/src/main/java/com/example/lms/service/AuthService.java}) -- undermines the entire role model \\
+Critical & Default admin/instructor/learner credentials are seeded on empty databases in any environment \\
+High & Committed default JWT secret allows token forgery when \code{JWT_SECRET} is unset \\
+High & Wildcard CORS with credentials exposes authenticated APIs to any origin \\
+Medium & No CI/CD means regressions are only caught by developers remembering to run tests \\
+Medium & No analytics means business success cannot be measured \\
+Low & MIT licence claimed but LICENSE file missing -- redistribution terms unclear \\
+\bottomrule
+\end{tabular}
+\end{table}

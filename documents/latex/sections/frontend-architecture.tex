@@ -1,0 +1,141 @@
+\section{Frontend Architecture}
+\label{sec:frontend-architecture}
+
+\subsection{Application entry and providers}
+\status{IMPLEMENTED}
+
+\begin{lstlisting}[language=bash,caption={Bootstrap chain (frontend/src/main.jsx, frontend/src/App.jsx)}]
+main.jsx
+  -> <StrictMode> -> <AuthProvider> -> <BrowserRouter> -> <ConfigProvider antdTheme>
+       -> <AppShell> (Navbar + Sidebar/Drawer + main + Footer)
+            -> <AppRoutes />
+\end{lstlisting}
+
+\noindent The antd theme in \pathref{frontend/src/App.jsx} injects the design tokens (black primary, 4px radius, 40px control height, custom component overrides) described in Section~\ref{sec:design-system}.
+
+\subsection{Routing}
+\status{IMPLEMENTED}
+
+\pathref{frontend/src/routes/AppRoutes.jsx} declares 17 routes:
+
+\begin{table}[H]
+\centering
+\caption{Frontend route table}
+\label{tab:frontend-routes}
+\begin{tabular}{@{}L{5.0cm}L{4.6cm}L{4.4cm}@{}}
+\toprule
+\textbf{Path} & \textbf{Component} & \textbf{Guard} \\
+\midrule
+\code{/} & HomePage & public \\
+\code{/login} & LoginPage & public (\code{?redirect=} honoured) \\
+\code{/register} & RegisterPage & public \\
+\code{/courses} & CourseCatalogPage & public \\
+\code{/courses/:id} & CourseDetailPage (CourseDetails) & public \\
+\code{/practice} & PracticePage & public \\
+\code{/courses/:courseId/practice} & CoursePracticePage & public \\
+\code{/courses/:courseId/learn} & LearningPage & authenticated \\
+\code{/quizzes/:id} & QuizTakingPage (QuizPage) & authenticated \\
+\code{/learner}, \code{/learner/certificates} & LearnerDashboard & LEARNER, ADMIN \\
+\code{/instructor}, \code{/instructor/courses/new} & InstructorDashboard & INSTRUCTOR, ADMIN \\
+\code{/admin}, \code{/admin/users}, \code{/admin/categories} & AdminDashboard & ADMIN \\
+\code{/profile} & ProfilePage & authenticated \\
+\code{*} & NotFoundPage & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Guard semantics}
+\status{IMPLEMENTED (with known gaps)}
+
+\pathref{frontend/src/routes/ProtectedRoute.jsx}:
+\begin{itemize}
+    \item \code{isLoading} $\rightarrow$ full-page \code{LoadingState} (``Authenticating\dots'').
+    \item Not authenticated $\rightarrow$ redirect to \code{/login?redirect=<path>} (the original query string is dropped -- defect KI-10).
+    \item Authenticated but role not in \code{allowedRoles} $\rightarrow$ inline 403 card (``Access Restricted'') with a full-page-home button.
+    \item Guards are usability controls only; the backend enforces authorisation (\pathref{CONTRACT.md} section 13).
+\end{itemize}
+
+\subsection{Navigation structure}
+\status{IMPLEMENTED}
+
+\begin{itemize}
+    \item \textbf{Navbar} (sticky): brand images, ``Create Course'' link (INSTRUCTOR only), auth-aware dropdown (Dashboard, Profile, Log Out) with avatar and role badge.
+    \item \textbf{Sidebar} (desktop, authenticated): role-specific \code{NavLink} sets -- ADMIN: \code{/admin}, \code{/courses}, \code{/admin/users}, \code{/admin/categories}, \code{/profile}; INSTRUCTOR: \code{/instructor}, \code{/courses}, \code{/instructor/courses/new}, \code{/profile}; LEARNER: \code{/learner}, \code{/courses}, \code{/learner/certificates}, \code{/profile}. Mobile uses an antd Drawer (width 320).
+    \item \textbf{Footer}: five columns (brand, Learn, Profile, Account, Practice). Three links point to routes that do not exist (\code{/learner/enrollments}, \code{/learner/progress}, \code{/settings}) -- defect KI-01.
+\end{itemize}
+
+\subsection{API layer}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Frontend API modules and the endpoints they call}
+\label{tab:frontend-api-modules}
+\begin{tabular}{@{}L{3.0cm}L{10.4cm}@{}}
+\toprule
+\textbf{Module} & \textbf{Endpoints invoked} \\
+\midrule
+\code{authApi} & \code{POST /api/v1/auth/register}, \code{POST /api/v1/auth/login}, \code{POST /api/v1/auth/logout} \\
+\code{userApi} & \code{GET /api/v1/users/{id}}, \code{PUT /api/v1/users/{id}}, \code{GET /api/v1/users} \\
+\code{categoryApi} & \code{GET/POST/PUT/DELETE /api/v1/categories[...]}, \code{GET /api/v1/categories/{id}} \\
+\code{courseApi} & \code{GET /api/v1/courses?search&categoryId&status&instructorId}, \code{GET/PUT/DELETE /api/v1/courses/{id}}, \code{POST /api/v1/courses} \\
+\code{enrollmentApi} & \code{POST /api/v1/courses/{id}/enroll}, \code{DELETE .../enroll?userId=}, \code{GET /api/v1/users/{id}/enrollments} \\
+\code{lessonApi} & \code{GET/POST /api/v1/courses/{id}/lessons}, \code{GET/PUT/DELETE /api/v1/lessons/{id}} \\
+\code{progressApi} & \code{GET /api/v1/courses/{id}/progress}, \code{POST/PATCH /api/v1/lessons/{id}/progress} \\
+\code{quizApi} & \code{GET /api/v1/courses/{id}/quizzes}, \code{GET/PUT/DELETE /api/v1/quizzes/{id}}, \code{POST .../attempts}, \code{GET .../results}, \code{POST /api/v1/courses/{id}/quizzes} \\
+\code{discussionApi} & \code{GET/POST /api/v1/courses/{id}/discussions}, \code{POST /api/v1/discussions/{id}/replies}, \code{DELETE /api/v1/discussions/{id}} \\
+\code{feedbackApi} & \code{GET/POST /api/v1/courses/{id}/feedback}, \code{PUT /api/v1/feedback/{id}} \\
+\code{certificateApi} & \code{GET/POST /api/v1/courses/{id}/certificate} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Every path above was cross-checked against the Spring controllers -- there are no phantom frontend calls. The shared \pathref{frontend/src/api/client.js} attaches the Bearer token, unwraps envelopes, and normalises errors (Section~\ref{sec:high-level-design}).
+
+\subsection{Component inventory}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Component inventory (selected, with purpose)}
+\label{tab:component-inventory}
+\begin{tabular}{@{}L{3.6cm}L{9.6cm}@{}}
+\toprule
+\textbf{Component} & \textbf{Purpose} \\
+\midrule
+AppShell / Navbar / Sidebar / Footer & Application chrome and role-aware navigation \\
+LearnerDashboard & KPI tiles, active/completed tabs, certificates list \\
+InstructorDashboard & Course table, content manager tabs (Lessons, Assessments), authoring modals, submissions modal \\
+AdminDashboard & KPI tiles, user directory, category CRUD, course moderation \\
+CourseCard / CourseList / CourseDetails & Catalogue presentation and detail tabs (Syllabus, Assessments, Practice, Discussions, Reviews) \\
+EnrollmentButton / ProgressBar & Enrolment interaction and progress display \\
+LessonPlayer / LearningPage & Classroom: media player, curriculum sidebar, certificate modal \\
+QuizPage / QuizResult / QuizCard & Timed assessment flow and review \\
+DiscussionList / DiscussionItem & Threads with recursive replies (UI depth $\leq$ 2) \\
+FeedbackForm & Ratings, average, star distribution, reviews \\
+CertificateCard & Printable credential \\
+practice/* & Problem list, workspace, statement panel, OneCompiler editor, course practice tab \\
+common/* & LoadingState, ErrorState, EmptyState (tested state primitives) \\
+ui/* & Card, GradientRibbon, SectionHeader, Badge, StatTile, WordmarkBanner (design-system kit) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Practice module structure}
+\status{IMPLEMENTED}
+
+\pathref{frontend/src/components/practice/} implements a self-contained feature: data access strictly through \code{fetchPracticeProblems} in \pathref{frontend/src/data/practiceData.js} (a local dataset of 7 problems across Python, JavaScript and Java, three of them bound to seeded course ids), rendering problem statements and a OneCompiler iframe. The file header documents the intended swap boundary: replace the local promise with \code{apiClient.get(...)} when a backend practice API exists. \status{IMPLEMENTED (client) / NOT IMPLEMENTED (server)}.
+
+\subsection{Build pipeline}
+\status{IMPLEMENTED}
+
+\begin{lstlisting}[language=bash,caption={Verified frontend commands (frontend/package.json)}]
+npm install
+npm run dev        # vite, port 3000, /api proxy to :8080
+npm run build      # vite build -> dist/
+npm run preview    # vite preview
+npm test           # vitest run (39 tests)
+npm run test:watch # vitest watch
+\end{lstlisting}
+
+\noindent There is no lint or format script; no ESLint/Prettier configuration exists in the repository. \status{NOT IMPLEMENTED (linting)}

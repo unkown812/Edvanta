@@ -92,7 +92,7 @@ export const HomePage = () => {
   return (
     <div className="space-y-0">
       {/* ================================================== Hero (dark band) */}
-      <section className="band band-dark bleed -mt-6 md:-mt-10">
+      <section className="band band-dark bleed  -mt-6 md:-mt-10">
         <div className="container-app py-14 md:py-section">
           <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
             <div className="max-w-2xl space-y-6">
@@ -142,7 +142,7 @@ export const HomePage = () => {
             </div>
 
             {/* Signature three-stop gradient ribbon — hero scale only */}
-            <div className="relative mx-auto w-full max-w-[560px] lg:max-w-none">
+            <div className="relative mx-auto w-full max-w-800 max-h-800 lg:max-w-700">
               <GradientRibbon />
             </div>
           </div>

@@ -1,0 +1,15 @@
+flowchart TD
+    MJ["src/main.jsx<br/>ReactDOM + StrictMode"] --> APP["src/App.jsx<br/>antd ConfigProvider (theme tokens)<br/>AuthProvider + BrowserRouter"]
+    APP --> SHELL["AppShell.jsx<br/>Navbar + Sidebar/Drawer + Footer"]
+    SHELL --> ROUTES["src/routes/AppRoutes.jsx<br/>17 routes"]
+    ROUTES --> PROT["ProtectedRoute.jsx<br/>auth + allowedRoles checks"]
+    ROUTES --> PUB["Public pages<br/>HomePage, CourseCatalogPage,<br/>CourseDetailPage, Login, Register,<br/>PracticePage, CoursePracticePage"]
+    ROUTES --> AUTH["Authenticated pages<br/>LearningPage, QuizTakingPage, ProfilePage"]
+    ROUTES --> DASH["Role dashboards<br/>LearnerDashboard, InstructorDashboard,<br/>AdminDashboard"]
+    DASH --> COMP["components/<br/>40+ components (cards, tables, modals,<br/>discussions, feedback, certificate, practice)"]
+    COMP --> APIM["src/api/ (11 modules)<br/>authApi, courseApi, quizApi, ..."]
+    APIM --> CLIENT["api/client.js<br/>axios instance, baseURL, interceptors"]
+    CLIENT -->|"Authorization: Bearer (localStorage lms_auth_token)"| BE["Spring Boot REST API"]
+    CTX["context/AuthContext.jsx<br/>+ hooks/useAuth.js"] -->|"token, user, role"| PROT
+    CTX -->|"persists"| LS[("localStorage<br/>lms_auth_token, lms_auth_user")]
+    DATA["data/practiceData.js<br/>static practice dataset"] --> PUB

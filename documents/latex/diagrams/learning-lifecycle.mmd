@@ -1,0 +1,25 @@
+flowchart TD
+    A["Register /role: LEARNER or INSTRUCTOR<br/>POST /api/v1/auth/register"] --> B["Login<br/>POST /api/v1/auth/login"]
+    B --> C{"Role?"}
+    C -->|"LEARNER"| D["Learner Dashboard /learner<br/>active + completed courses, certificates"]
+    C -->|"INSTRUCTOR"| E["Instructor Dashboard /instructor<br/>course authoring, lessons, quizzes"]
+    C -->|"ADMIN"| F["Admin Dashboard /admin<br/>users, categories, courses"]
+    D --> G["Browse catalogue /courses<br/>search + category filter"]
+    G --> H["Course detail /courses/:id<br/>syllabus, assessments, practice,<br/>discussions, reviews"]
+    H --> I["Enroll<br/>POST /api/v1/courses/:id/enroll"]
+    I --> J["Classroom /courses/:courseId/learn<br/>LessonPlayer, curriculum sidebar"]
+    J --> K["Mark lesson complete<br/>POST /api/v1/lessons/:id/progress"]
+    K --> L["Course progress %<br/>GET /api/v1/courses/:id/progress"]
+    L --> M{"All lessons done<br/>and all quizzes passed?"}
+    M -->|"No"| J
+    M -->|"Yes"| N["Generate certificate<br/>POST /api/v1/courses/:id/certificate"]
+    N --> O["CertificateCard - print / save PDF"]
+    J --> P["Take quiz /quizzes/:id<br/>timer, question palette"]
+    P --> Q["Submit answers<br/>POST /api/v1/quizzes/:id/attempts<br/>backend scores authoritatively"]
+    Q --> R["QuizResult: score, pass/fail, explanations"]
+    R --> M
+    H --> S["Discussion thread / feedback<br/>POST discussions, POST feedback"]
+    E --> T["Create course, lessons,<br/>quizzes + questions"]
+    T --> U["Publish status PUBLISHED"]
+    U --> G
+    F --> V["Manage users, categories,<br/>delete courses"]

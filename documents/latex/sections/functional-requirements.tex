@@ -1,0 +1,165 @@
+\section{Functional Requirements}
+\label{sec:functional-requirements}
+
+Each requirement is traceable to implemented code. \status{IMPLEMENTED} means behaviour was verified in source; \status{RECOMMENDED} marks capabilities that do not exist and are suggested, not promised.
+
+\subsection{Authentication and account management (FR-AUTH)}
+\begin{table}[H]
+\centering
+\caption{Functional requirements -- authentication}
+\label{tab:fr-auth}
+\begin{tabular}{@{}C{1.5cm}L{8.6cm}L{3.9cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Evidence} \\
+\midrule
+FR-AUTH-01 & The system shall allow self-registration with name, email, password and role & \code{POST /api/v1/auth/register} \\
+FR-AUTH-02 & Passwords shall be stored only as BCrypt hashes & \code{BCryptPasswordEncoder} in SecurityConfig \\
+FR-AUTH-03 & Email uniqueness must be enforced at registration (409 on duplicate) & AuthService \code{existsByEmail} \\
+FR-AUTH-04 & Password policy: minimum 6, maximum 100 characters & \code{@Size} on RegisterRequest \\
+FR-AUTH-05 & Successful authentication returns a signed JWT (24 h) plus the user profile & AuthResponse \\
+FR-AUTH-06 & Login failures return 401 \code{UNAUTHORIZED} with generic message & AuthService + GlobalExceptionHandler \\
+FR-AUTH-07 & Subsequent requests authenticate via \code{Authorization: Bearer} header & JwtAuthenticationFilter \\
+FR-AUTH-08 & Profile update (name, bio, avatar URL; optional password) for self or admin & UserService.updateUser \\
+FR-AUTH-09 & \emph{Client} logout clears stored token and calls \code{POST /auth/logout} & AuthContext.logout \\
+FR-AUTH-10 & Server-side logout must invalidate the token & \status{RECOMMENDED} (not implemented -- endpoint is a no-op) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Course management (FR-COURSE)}
+\begin{table}[H]
+\centering
+\caption{Functional requirements -- courses}
+\label{tab:fr-course}
+\begin{tabular}{@{}C{1.5cm}L{8.6cm}L{3.9cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Evidence} \\
+\midrule
+FR-CRS-01 & List courses with optional \code{search}, \code{categoryId}, \code{status}, \code{instructorId} filters & CourseController GET \\
+FR-CRS-02 & Retrieve a single course incl.\ computed \code{totalLessons}, \code{totalEnrolled} & CourseService.mapToCourseResponse \\
+FR-CRS-03 & Create a course restricted to INSTRUCTOR/ADMIN (403 otherwise) & \code{@PreAuthorize} on POST \\
+FR-CRS-04 & Update/delete restricted to admin or the owning instructor & \code{validateCourseOwnership} \\
+FR-CRS-05 & Course status lifecycle: DRAFT, PUBLISHED, ARCHIVED & \code{Course.Status} enum \\
+FR-CRS-06 & Course fields: title, description, category, thumbnail URL, instructor & CourseCreateRequest \\
+FR-CRS-07 & Category CRUD restricted to ADMIN; duplicate names rejected (409) & CategoryController/Service \\
+FR-CRS-08 & Public (unauthenticated) read access to course list and detail & SecurityConfig permitAll GET \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Lessons and learning delivery (FR-LESSON)}
+\begin{table}[H]
+\centering
+\caption{Functional requirements -- lessons and player}
+\label{tab:fr-lesson}
+\begin{tabular}{@{}C{1.5cm}L{8.6cm}L{3.9cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Evidence} \\
+\midrule
+FR-LSN-01 & Lessons belong to a course with explicit \code{orderIndex} and \code{durationMinutes} & Lesson entity \\
+FR-LSN-02 & Lesson content: external/video URL, embeddable media, or long-form text & LessonPlayer media detection \\
+FR-LSN-03 & Lesson CRUD restricted to instructor-owner/admin & LessonController \code{@PreAuthorize} \\
+FR-LSN-04 & New lessons default to the next order index & LessonService.createLesson \\
+FR-LSN-05 & Learner can mark a lesson complete (100\%) with watch-time seconds & ProgressController POST/PATCH \\
+FR-LSN-06 & Classroom shows curriculum sidebar with completion state and lesson navigation & LearningPage \\
+FR-LSN-07 & Video URLs (YouTube/Vimeo/\code{.mp4}) are converted to embeddable players & \code{getEmbedUrl} in LessonPlayer \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Enrollment and progress (FR-ENR)}
+\begin{table}[H]
+\centering
+\caption{Functional requirements -- enrollment and progress}
+\label{tab:fr-enroll}
+\begin{tabular}{@{}C{1.5cm}L{8.6cm}L{3.9cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Evidence} \\
+\midrule
+FR-ENR-01 & Learner enrols in a course; duplicate active enrolment returns 409 & EnrollmentService.enroll \\
+FR-ENR-02 & Unenrolment is a soft drop (status DROPPED), rows are retained & EnrollmentService.unenroll \\
+FR-ENR-03 & Only self or ADMIN may list a user's enrolments (403 otherwise) & EnrollmentService.getUserEnrollments \\
+FR-ENR-04 & Instructors are blocked from enrolling as learners in the UI & EnrollmentButton guard \\
+FR-PRG-01 & Progress is stored per user+lesson with unique constraint & \code{uk_user_lesson_progress} \\
+FR-PRG-02 & Course progress \% is computed as completed/total lessons (2 dp) & ProgressService.getCourseProgress \\
+FR-PRG-03 & Completing all lessons auto-marks the enrolment COMPLETED & \code{checkAndUpdateCourseCompletion} \\
+FR-PRG-04 & Dashboard distinguishes active vs completed enrolments & LearnerDashboard \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Assessments (FR-QUIZ)}
+\begin{table}[H]
+\centering
+\caption{Functional requirements -- quizzes}
+\label{tab:fr-quiz}
+\begin{tabular}{@{}C{1.5cm}L{8.6cm}L{3.9cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Evidence} \\
+\midrule
+FR-QIZ-01 & Quizzes belong to a course with passing score (default 70\%) and time limit (default 30 min) & Quiz entity/service defaults \\
+FR-QIZ-02 & Questions have four options, a correct option (A--D), points (default 10) and an explanation & Question entity \\
+FR-QIZ-03 & Learners receive questions \emph{without} correct answers; instructors/admins with them & \code{includeAnswers} flag in QuizService \\
+FR-QIZ-04 & Quiz authoring (create/update/delete) restricted to instructor-owner/admin & \code{@PreAuthorize} + ownership check \\
+FR-QIZ-05 & Submission is scored server-side: \code{earned/possible x 100}, pass if $\geq$ passing score & QuizService.submitQuiz \\
+FR-QIZ-06 & Each attempt persists score, total points, passed flag and per-answer correctness & quiz\_attempt tables \\
+FR-QIZ-07 & Result view shows per-question explanations and correct answers & QuizResult component \\
+FR-QIZ-08 & Instructors see attempts for their own quizzes; admins see all & \code{getQuizResults} scoping \\
+FR-QIZ-09 & Empty quizzes cannot be submitted (400) & \code{no questions to evaluate} check \\
+FR-QIZ-10 & Scoring denominator shall include unanswered questions & \status{RECOMMENDED} (current code counts only submitted answers) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Social features (FR-SOC) and certificates (FR-CERT)}
+\begin{table}[H]
+\centering
+\caption{Functional requirements -- discussions, feedback, certificates}
+\label{tab:fr-social}
+\begin{tabular}{@{}C{1.5cm}L{8.6cm}L{3.9cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Evidence} \\
+\midrule
+FR-SOC-01 & Threaded course discussions (top-level posts + nested replies, depth-limited in UI) & Discussion entity self-reference \\
+FR-SOC-02 & Only the author or ADMIN may delete a discussion (403 otherwise) & DiscussionService.deleteDiscussion \\
+FR-SOC-03 & Feedback requires enrolment; one rating (1--5) per user/course; updates allowed & FeedbackService checks \\
+FR-SOC-04 & Course review page shows average rating and per-star distribution & FeedbackForm \\
+FR-CERT-01 & Certificate generation requires enrolment & CertificateService eligibility check \\
+FR-CERT-02 & All lessons of the course must be completed (when lessons exist) & \code{completedLessons < totalLessons} guard \\
+FR-CERT-03 & Every quiz in the course must have a passed attempt & \code{existsByQuizIdAndUserIdAndPassedTrue} \\
+FR-CERT-04 & Unique certificate code (\code{LMS-XXXXXXXX-NNNN}) + issue date + learner/course data & CertificateService \\
+FR-CERT-05 & Generation is idempotent -- existing certificate is returned & \code{orphan} check first \\
+FR-CERT-06 & Learner can print/save the certificate as PDF from the browser & CertificateCard \code{window.print()} \\
+FR-CERT-07 & Public certificate verification endpoint & \status{RECOMMENDED} (README Phase 4 item; not implemented) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Administration (FR-ADM) and practice (FR-PRA)}
+\begin{table}[H]
+\centering
+\caption{Functional requirements -- administration and practice module}
+\label{tab:fr-admin}
+\begin{tabular}{@{}C{1.5cm}L{8.6cm}L{3.9cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Evidence} \\
+\midrule
+FR-ADM-01 & List all users (ADMIN only, enforced server-side) & \code{GET /api/v1/users} \code{@PreAuthorize} \\
+FR-ADM-02 & Admin console with KPI tiles, user directory, category CRUD, course moderation & AdminDashboard \\
+FR-ADM-03 & Role changes only performed by ADMIN & UserService.updateUser \\
+FR-ADM-04 & Bootstrap data: 4 default categories and 3 demo accounts on empty DB & DataInitializer \\
+FR-PRA-01 & Global practice workspace listing 7 problems (3 languages) with difficulty badges & PracticePage + practiceData.js \\
+FR-PRA-02 & Course-scoped practice tab for problems attached to a course & CoursePracticeTab \\
+FR-PRA-03 & Embedded OneCompiler editor with starter-code injection via \code{postMessage} & OneCompilerEditor \\
+FR-PRA-04 & Practice data served from a backend API & \status{RECOMMENDED} (explicitly local today; single-file swap designed in) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cross-cutting functional behaviour}
+\begin{itemize}
+    \item \textbf{Consistent envelopes:} every success body is \texttt{\{success, message, data\}}; every error body is \texttt{\{error: \{code, message, details?\}\}} (\pathref{backend/src/main/java/com/example/lms/dto/response/ApiResponse.java}, \pathref{ErrorResponse.java}).
+    \item \textbf{Validation:} Bean Validation (\code{@Valid}) on all request DTOs; field errors aggregated into \code{VALIDATION_ERROR} with per-field details.
+    \item \textbf{UI states:} every major page implements loading / success / empty / error / retry states as mandated by \pathref{CONTRACT.md} section 16 (LoadingState, ErrorState, EmptyState components).
+    \item \textbf{Public reads:} unauthenticated users can browse courses and categories; everything else requires a token (SecurityConfig).
+\end{itemize}

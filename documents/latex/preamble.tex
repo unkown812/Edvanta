@@ -1,0 +1,146 @@
+% ============================================================
+% preamble.tex - shared style and package configuration
+% Target engines: pdflatex (primary), xelatex (compatible)
+% Designed for clean conversion workflows (standard constructs only)
+% ============================================================
+
+% --- Encoding and fonts ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{microtype}
+
+% --- Page layout ---
+\usepackage[a4paper,margin=2.4cm,top=3.0cm,bottom=2.6cm,headheight=14pt]{geometry}
+\usepackage{setspace}
+\setstretch{1.08}
+
+% --- Graphics and colour ---
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{linkblue}{HTML}{1A4B8C}
+\definecolor{codedark}{HTML}{1E1E1E}
+\definecolor{codebg}{HTML}{F4F4F5}
+\definecolor{rulegrey}{HTML}{BFBFBF}
+\definecolor{statusgreen}{HTML}{1A7F4B}
+\definecolor{statusred}{HTML}{C02626}
+\definecolor{statusamber}{HTML}{A34E12}
+
+% --- Tables ---
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+% --- Floats, captions, cross references ---
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf,skip=6pt}
+\usepackage{amsmath,amssymb}
+\usepackage{xurl}
+
+% --- Lists ---
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=*}
+\usepackage{multicol}
+
+% --- Section formatting ---
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{black!85}}{\thesection}{0.8em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{black!75}}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{black!65}}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{18pt}{10pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+% --- Headers and footers ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{black!60}{Learning Management System -- Repository Documentation}}
+\fancyhead[R]{\small\textcolor{black!60}{v\docversion}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\providecommand{\sectionmark}[1]{}
+
+% --- Hyperlinks (load late) ---
+\usepackage[
+  colorlinks=true,
+  linkcolor=black!80,
+  urlcolor=linkblue,
+  citecolor=black!80,
+  bookmarks=true,
+  pdftitle={Learning Management System -- Repository Documentation},
+  pdfauthor={Generated from Repository Analysis}
+]{hyperref}
+
+% --- Code listings ---
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue!55!black}\bfseries,
+  commentstyle=\color{green!35!black}\itshape,
+  stringstyle=\color{orange!70!black},
+  numberstyle=\tiny\color{black!45},
+  identifierstyle=,
+  breaklines=true,
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{rulegrey},
+  backgroundcolor=\color{codebg},
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=2,
+  aboveskip=8pt,
+  belowskip=8pt,
+  xleftmargin=2pt,
+  xrightmargin=2pt
+}
+
+\lstdefinelanguage{yaml}{
+  morekeywords={true,false,null,ON,OFF},
+  keywordstyle=\color{blue!55!black}\bfseries,
+  identifierstyle=,
+  stringstyle=\color{orange!70!black},
+  sensitive=false,
+  morecomment=[l]{\#},
+  commentstyle=\color{green!35!black}\itshape,
+  basicstyle=\ttfamily\small,
+  breaklines=true
+}
+
+\lstdefinelanguage{json}{
+  morekeywords={true,false,null},
+  keywordstyle=\color{blue!55!black}\bfseries,
+  identifierstyle=,
+  stringstyle=\color{orange!70!black},
+  sensitive=false,
+  basicstyle=\ttfamily\small,
+  breaklines=true
+}
+
+\lstdefinelanguage{http}{
+  morekeywords={GET,POST,PUT,PATCH,DELETE,HTTP,Authorization,Content-Type,Bearer},
+  keywordstyle=\color{blue!55!black}\bfseries,
+  identifierstyle=,
+  stringstyle=\color{orange!70!black},
+  sensitive=false,
+  basicstyle=\ttfamily\small,
+  breaklines=true
+}
+
+% --- Convenience commands (kept deliberately minimal) ---
+% \detokenize makes file paths with underscores printable without manual escaping
+\newcommand{\status}[1]{\textbf{Status:} #1}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\pathref}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\sevfootnote}[1]{\textcolor{statusred}{\textbf{#1}}}
