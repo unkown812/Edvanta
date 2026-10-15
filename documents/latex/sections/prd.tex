@@ -1,0 +1,137 @@
+\section{Product Requirements Document (PRD)}
+\label{sec:prd}
+
+\subsection{Product vision}
+\status{INFERRED (synthesised from README.md and CONTRACT.md)}
+
+Give every learner, instructor and administrator one secure, self-service platform where the full learning lifecycle -- discover, enrol, learn, prove, certify -- works end-to-end without operational overhead.
+
+\subsection{Problem statement}
+\status{INFERRED}
+
+Learners need a trustworthy path from course discovery to a verifiable credential; instructors need authoring and monitoring tools; administrators need catalogue and user control. Today these are separate activities. The product solves them as one integrated flow.
+
+\subsection{Goals and objectives}
+\status{IMPLEMENTED (goals declared in repository) / INFERRED (framing)}
+
+\begin{table}[H]
+\centering
+\caption{PRD goals mapped to implemented capability}
+\label{tab:prd-goals}
+\begin{tabular}{@{}C{1.4cm}L{8.4cm}L{4.4cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Goal} & \textbf{Implementation evidence} \\
+\midrule
+G1 & Secure, role-aware access for three personas & \pathref{backend/src/main/java/com/example/lms/config/SecurityConfig.java} + ProtectedRoute \\
+G2 & Full course catalogue with search/filter & CourseController + CourseCatalogPage \\
+G3 & Structured learning with progress visibility & LessonPlayer, ProgressBar, ProgressService \\
+G4 & Authoritative assessment & QuizService scoring, QuizResult review UI \\
+G5 & Evidence of completion & CertificateService eligibility + CertificateCard \\
+G6 & Engagement: discussion and feedback & DiscussionService, FeedbackService \\
+G7 & Self-service authoring for instructors & InstructorDashboard (course/lesson/quiz modals) \\
+G8 & Extensible practice layer & \pathref{frontend/src/components/practice/} + local dataset \\
+G9 & Contract-driven, tested delivery & \pathref{CONTRACT.md}, 61 automated tests \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Personas}
+Covered in Section~\ref{sec:project-description} (personas inferred from seeded accounts; \status{INFERRED}).
+
+\subsection{User stories}
+\status{IMPLEMENTED (stories exercised by existing code and tests)}
+
+\begin{table}[H]
+\centering
+\caption{Primary user stories}
+\label{tab:user-stories}
+\begin{tabular}{@{}C{1.3cm}L{9.2cm}L{3.6cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Story} & \textbf{Covered by} \\
+\midrule
+US-01 & As a visitor I can register and log in so that I can use the platform & AuthControllerTest \\
+US-02 & As a learner I can browse and search the catalogue without logging in & public GET \code{/api/v1/courses} \\
+US-03 & As a learner I can enrol in a course exactly once & EnrollmentServiceTest \\
+US-04 & As a learner I can mark lessons complete and see course progress & ProgressServiceTest \\
+US-05 & As a learner I can take a quiz under a time limit and see my score & QuizServiceTest, quiz.test.jsx \\
+US-06 & As a learner I can generate a certificate when I complete a course & CertificateServiceTest \\
+US-07 & As a learner I can discuss a course and leave one rating/feedback & social\_cert.test.jsx \\
+US-08 & As an instructor I can create, edit, publish and delete my courses & CourseServiceTest, InstructorDashboard \\
+US-09 & As an instructor I can author quizzes with questions and answer keys & InstructorDashboard quiz modal \\
+US-10 & As an instructor I can view learner submissions for my quizzes & QuizService results scoping \\
+US-11 & As an admin I can manage categories and view all users & CategoryController, UserController \\
+US-12 & As any user I can update my profile (name, bio, avatar) & ProfilePage + UserService \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Use cases}
+Covered in Section~\ref{sec:project-description} (use cases UC-1 to UC-4).
+
+\subsection{Features and functional requirements}
+\status{IMPLEMENTED}
+
+The authoritative feature list with acceptance-relevant detail is maintained in Section~\ref{sec:functional-requirements}. Feature inventory for product readers is in Section~\ref{sec:project-description}.
+
+\subsection{Acceptance criteria}
+\status{IMPLEMENTED (Definition of Done as written in CONTRACT.md section 32)}
+
+The repository's own acceptance gate is the Definition of Done. Summarised (full checklist in \pathref{CONTRACT.md}):
+
+\begin{itemize}
+    \item \textbf{Authentication:} register/login/logout work; passwords hashed; JWT works; protected routes and role authorisation work; invalid authentication handled.
+    \item \textbf{Courses:} CRUD works; ownership/permissions enforced.
+    \item \textbf{Enrollment:} learner can enrol; duplicates prevented; unauthorised actions rejected.
+    \item \textbf{Learning:} lessons load; completion recorded; progress persisted and reflected in the UI.
+    \item \textbf{Assessments:} quiz loads; answers submitted; \emph{backend} calculates authoritative score; results persisted and visible.
+    \item \textbf{Discussions/Feedback:} creation, retrieval, replies, validation and unauthorised-modification rejection work.
+    \item \textbf{Certificates:} requirements validated; correct learner/course data; downloadable.
+    \item \textbf{Frontend:} all pages implemented; loading/empty/error states exist; forms validate; responsive layout; tests pass; production build succeeds.
+    \item \textbf{Integration:} frontend connects to the real backend; no required feature depends on temporary mock data.
+\end{itemize}
+
+\noindent \textbf{Gap versus gate:} the practice module ships with static data by explicit design (\pathref{frontend/src/data/practiceData.js} header comment), and \pathref{CONTRACT.md} allows mocks only during isolated frontend development. \status{KNOWN DEVIATION}
+
+\subsection{Success metrics}
+\status{UNKNOWN}
+
+No product analytics exist (see Section~\ref{sec:brd}). \status{RECOMMENDED} metrics to instrument before launch: registration$\rightarrow$enrolment conversion, course completion rate, quiz pass rate, certificate issue rate -- none of these can currently be measured.
+
+\subsection{Constraints}
+\status{IMPLEMENTED}
+
+\begin{itemize}
+    \item v1.0 scope boundaries (excluded: payments, streaming, mobile apps, AI features, SSO, multi-tenancy) -- \pathref{CONTRACT.md} section 5.2.
+    \item Two-workstream ownership; cross-boundary changes require coordination (sections 27, 29--31).
+    \item Single language (English), single database, single deployment target implied by configuration.
+\end{itemize}
+
+\subsection{Dependencies}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{External and internal dependencies}
+\label{tab:prd-dependencies}
+\begin{tabular}{@{}L{5.0cm}L{7.6cm}C{2.2cm}@{}}
+\toprule
+\textbf{Dependency} & \textbf{Use} & \textbf{Status} \\
+\midrule
+MySQL 8 & Primary data store & Required at runtime \\
+Node.js + npm & Frontend build/test & Required at build time \\
+Java 21 + Maven & Backend build (Maven wrapper 3.9.9 included) & Required at build time \\
+Google Fonts (Inter, JetBrains Mono) & Typography (\pathref{frontend/index.html}) & Runtime CDN call \\
+OneCompiler embed & Coding-practice editor iframe & Runtime third-party \\
+YouTube embed URLs & Lesson video players & Content-supplied \\
+Unsplash images & Fallback thumbnails (hardcoded URLs) & Runtime third-party \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Risks}
+Covered in Section~\ref{sec:brd} (risks) and Section~\ref{sec:known-issues} (defects).
+
+\subsection{Future scope}
+\status{IMPLEMENTED (as declared) / NOT IMPLEMENTED (as content)}
+
+\pathref{README.md} publishes a four-phase roadmap: Phase 1 (core LMS) is marked complete; Phases 2--4 (discussions/feedback/notifications/analytics, instructor platform, advanced platform incl. password recovery, CI/CD, monitoring) are unchecked. Note that discussions and feedback \emph{are} already implemented while listed as Phase~2 -- the README roadmap has drifted from the code. The reconciled roadmap is Section~\ref{sec:roadmap}.

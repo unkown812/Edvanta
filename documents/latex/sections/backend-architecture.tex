@@ -1,0 +1,123 @@
+\section{Backend Architecture}
+\label{sec:backend-architecture}
+
+\subsection{Layered structure}
+\status{IMPLEMENTED}
+
+The backend follows the canonical layering mandated by \pathref{CONTRACT.md} section 7:
+
+\begin{center}
+\texttt{Controller $\rightarrow$ Service $\rightarrow$ Repository $\rightarrow$ Database}
+\end{center}
+
+\noindent Controllers never touch repositories directly (verified: all persistence calls go through service classes); DTOs isolate the wire format from JPA entities; security components sit \emph{beside} the layers in the servlet filter chain.
+
+\subsection{Component inventory}
+\begin{table}[H]
+\centering
+\caption{Backend component counts}
+\label{tab:backend-inventory}
+\begin{tabular}{@{}L{5.0cm}C{2.2cm}L{6.4cm}@{}}
+\toprule
+\textbf{Component type} & \textbf{Count} & \textbf{Location} \\
+\midrule
+REST controllers & 11 & \pathref{backend/src/main/java/com/example/lms/controller/} \\
+Service classes & 11 & \pathref{backend/src/main/java/com/example/lms/service/} \\
+JPA repositories & 13 & \pathref{backend/src/main/java/com/example/lms/repository/} \\
+Entities & 13 & \pathref{backend/src/main/java/com/example/lms/entity/} \\
+Request DTOs & 15 & \pathref{backend/src/main/java/com/example/lms/dto/request/} \\
+Response DTOs & 15 & \pathref{backend/src/main/java/com/example/lms/dto/response/} \\
+Security components & 5 & \pathref{backend/src/main/java/com/example/lms/security/} \\
+Exception types & 7 (1 advice + 6) & \pathref{backend/src/main/java/com/example/lms/exception/} \\
+Configuration classes & 3 & \pathref{backend/src/main/java/com/example/lms/config/} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Request lifecycle}
+\status{IMPLEMENTED}
+
+\begin{enumerate}
+    \item \textbf{Container} receives HTTP request on port \code{PORT} (8080 default).
+    \item \textbf{JwtAuthenticationFilter} (\code{OncePerRequestFilter}) extracts \code{Authorization: Bearer} token, validates signature/expiry, loads the user by id, and populates \code{SecurityContextHolder}. Failures are logged and the request continues unauthenticated.
+    \item \textbf{Spring Security authorisation} applies URL matchers (\code{permitAll} / \code{hasRole}) or throws \code{AccessDeniedException}.
+    \item \textbf{DispatcherServlet} routes to a controller method; \code{@Valid} triggers Bean Validation.
+    \item \textbf{Method security} evaluates \code{@PreAuthorize} expressions (\code{hasRole('ADMIN')}, \code{hasAnyRole('INSTRUCTOR','ADMIN')}).
+    \item \textbf{Service} executes business rules (ownership checks, eligibility, scoring) inside a JPA transaction.
+    \item \textbf{Repository} persists/queries; entities map to the 13 tables.
+    \item \textbf{Response} DTOs are serialised inside the \code{ApiResponse} envelope; exceptions are translated by \code{GlobalExceptionHandler}.
+\end{enumerate}
+
+\subsection{Security components in detail}
+\begin{table}[H]
+\centering
+\caption{Security component responsibilities}
+\label{tab:security-components}
+\begin{tabular}{@{}L{3.8cm}L{9.4cm}@{}}
+\toprule
+\textbf{Class} & \textbf{Behaviour (verified)} \\
+\midrule
+\pathref{security/JwtTokenProvider.java} & Builds HMAC key from Base64-decoded \code{app.jwt.secret}; issues claims \code{sub} (user id), \code{email}, \code{role}, \code{iat}, \code{exp}; \code{validateToken} catches \code{JwtException} and returns false \\
+\pathref{security/JwtAuthenticationFilter.java} & Reads Bearer token (prefix \code{"Bearer "}), validates, loads \code{UserPrincipal} by id, sets authentication; never blocks the chain on failure \\
+\pathref{security/CustomUserDetailsService.java} & Loads users by email or id; wraps as \code{UserPrincipal} \\
+\pathref{security/UserPrincipal.java} & Exposes single authority \code{ROLE_LEARNER|INSTRUCTOR|ADMIN}; \code{getUsername()} returns email \\
+\pathref{security/JwtAuthenticationEntryPoint.java} & Returns 401 JSON \texttt{\{error: \{code: "UNAUTHORIZED", ...\}\}} for unauthenticated access \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{DTO and mapping strategy}
+\status{IMPLEMENTED}
+
+\begin{itemize}
+    \item Request DTOs carry validation annotations (\code{@NotBlank}, \code{@Email}, \code{@Size}, \code{@Min}/\code{@Max}); example: \pathref{dto/request/RegisterRequest.java} (name 2--100, password 6--100).
+    \item Response DTOs are built by explicit static factories (e.g.\ \code{UserResponse.fromEntity}) -- no MapStruct/modelMapper dependency.
+    \item Entities are never serialised directly; the envelope adds \code{success}/\code{message}/\code{data}.
+    \item Sensitive fields are excluded by construction (\code{password} never appears in \code{UserResponse}); question DTOs strip \code{correctOption} for learners via the \code{includeAnswers} flag.
+\end{itemize}
+
+\subsection{Exception taxonomy}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Exception types and HTTP mapping (from GlobalExceptionHandler)}
+\label{tab:exception-taxonomy}
+\begin{tabular}{@{}L{4.6cm}C{2.0cm}L{6.4cm}@{}}
+\toprule
+\textbf{Exception} & \textbf{HTTP} & \textbf{Error code} \\
+\midrule
+\code{ResourceNotFoundException} & 404 & \code{RESOURCE_NOT_FOUND} \\
+\code{ResourceConflictException} & 409 & \code{RESOURCE_CONFLICT} \\
+\code{ForbiddenException} & 403 & \code{FORBIDDEN} \\
+\code{UnauthorizedException} & 401 & \code{UNAUTHORIZED} \\
+\code{BadRequestException} & 400 & \code{VALIDATION_ERROR} (or custom) \\
+\code{MethodArgumentNotValidException} & 400 & \code{VALIDATION_ERROR} + per-field \code{details} \\
+\code{AccessDeniedException} (Spring) & 403 & \code{FORBIDDEN} \\
+\code{AuthenticationException} & 401 & \code{UNAUTHORIZED} \\
+Catch-all \code{Exception} & 500 & \code{INTERNAL_SERVER_ERROR} (generic message, logged) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Configuration and bootstrap}
+\status{IMPLEMENTED}
+
+\begin{itemize}
+    \item \pathref{backend/src/main/resources/application.yml} -- port, datasource (\code{DB_URL} with local default), \code{ddl-auto: update}, JWT secret/expiry with committed defaults, springdoc paths, log levels.
+    \item \pathref{backend/src/main/resources/application-test.yml} -- H2 in-memory (\code{MODE=MySQL}), \code{create-drop}, 1-hour JWT, quiet logging.
+    \item \pathref{config/DataInitializer.java} -- \code{CommandLineRunner} that seeds 4 categories when the category table is empty and 3 demo users (with BCrypt-encoded, \emph{hardcoded} passwords) when the user table is empty. No profile guard applies. \textbf{See Section~\ref{sec:security} for the associated findings.}
+    \item \pathref{config/OpenApiConfig.java} -- OpenAPI 3 document \emph{``Learning Management System (LMS) API''} v1.0.0, MIT licence string, bearer security scheme, contact block for the backend workstream.
+\end{itemize}
+
+\subsection{Build and packaging}
+\status{IMPLEMENTED}
+
+\begin{lstlisting}[language=bash,caption={Verified backend build and run commands (backend/pom.xml, README.md)}]
+cd backend
+./mvnw spring-boot:run      # development
+./mvnw test                 # run backend tests
+./mvnw clean package        # build lms-backend-1.0.0.jar
+\end{lstlisting}
+
+\noindent The Docker image runs the same artifact (\code{java -jar app.jar}) under \code{eclipse-temurin:21-jre-alpine}. Tests skip during container build (\code{-DskipTests}).

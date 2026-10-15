@@ -1,0 +1,112 @@
+\section{Project Overview}
+\label{sec:project-overview}
+
+\subsection{What this repository contains}
+\status{IMPLEMENTED}
+
+The repository \pathref{FSJP_LMS} is a full-stack \textbf{Learning Management System (LMS)} -- a web platform that connects learners, instructors and administrators through a centralised online-learning environment. The product UI is branded \textbf{Edvanta} (page title ``Edvanta -- Learn Your Way'' and footer ``\copyright{} 2026 Edvanta'' in \pathref{frontend/index.html} and \pathref{frontend/src/components/Footer.jsx}).
+
+The repository implements the complete core learning lifecycle: registration and login, course discovery, enrollment, lesson consumption, progress tracking, quizzes with server-side scoring, discussions, course feedback, and verifiable course-completion certificates. \status{IMPLEMENTED}
+
+\subsection{Repository layout}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Top-level repository structure}
+\label{tab:repo-layout}
+\begin{tabular}{@{}L{3.6cm}L{10.6cm}@{}}
+\toprule
+\textbf{Path} & \textbf{Contents} \\
+\midrule
+\pathref{backend/} & Spring Boot 3.3.4 REST API (Java 21), Maven build, Dockerfile, tests \\
+\pathref{frontend/} & React 18 SPA (Vite 6), Ant Design 5, Tailwind CSS 3, Vitest tests \\
+\pathref{database/} & \pathref{schema.sql} (13 tables), \pathref{seed.sql}, \pathref{dummy.sql} sample data \\
+\pathref{README.md} & Project overview, setup instructions, roadmap, authorization matrix \\
+\pathref{CONTRACT.md} & Two-workstream engineering contract (ownership, API, DoD) \\
+\pathref{.env.example} & Documented backend and frontend environment variables \\
+\pathref{.gitignore} & Ignores build output, dependencies, \pathref{.env*} files \\
+\pathref{audit-dropped.cjs} & Node utility script comparing UI strings against a git baseline \\
+\pathref{.vscode/} & Editor launch/settings configuration \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Absent from the repository (verified by directory listing): \pathref{.github/} (no CI/CD workflows), \pathref{docker-compose.yml}, a root \pathref{LICENSE} file, and any frontend \pathref{Dockerfile}. \status{IMPLEMENTED (absence verified)}
+
+\subsection{Technology stack}
+\status{IMPLEMENTED}
+
+Versions are taken from \pathref{backend/pom.xml} and \pathref{frontend/package.json}.
+
+\begin{table}[H]
+\centering
+\caption{Technology stack as declared in package manifests}
+\label{tab:tech-stack}
+\begin{tabular}{@{}L{3.2cm}L{4.6cm}L{6.4cm}@{}}
+\toprule
+\textbf{Layer} & \textbf{Technology} & \textbf{Evidence / Purpose} \\
+\midrule
+Frontend framework & React 18.3.1 & \pathref{frontend/package.json} -- SPA UI \\
+Build tool & Vite 6.0.1 & \pathref{frontend/vite.config.js} -- dev server on port 3000 \\
+UI component library & Ant Design 5.22.2 & Tables, modals, forms, tabs, message toasts \\
+Styling & Tailwind CSS 3.4.16 & \pathref{frontend/tailwind.config.js} -- design tokens \\
+Routing & React Router 6.28.0 & \pathref{frontend/src/routes/AppRoutes.jsx} -- 17 routes \\
+HTTP client & Axios 1.7.9 & \pathref{frontend/src/api/client.js} -- interceptors, JWT header \\
+Backend framework & Spring Boot 3.3.4 & \pathref{backend/pom.xml} parent version \\
+Language & Java 21 & \pathref{backend/pom.xml} \code{<java.version>} and Dockerfile \\
+Security & Spring Security + JJWT 0.12.6 & Stateless JWT authentication, BCrypt \\
+Persistence & Spring Data JPA / Hibernate & 13 repositories, \code{ddl-auto: update} \\
+Database & MySQL 8 (runtime), H2 (tests) & \pathref{database/schema.sql}, \pathref{backend/pom.xml} \\
+API documentation & springdoc-openapi 2.6.0 & \code{/v3/api-docs}, \code{/swagger-ui.html} \\
+Testing & Spring Test, Vitest 2.1.8 & \pathref{backend/src/test}, \pathref{frontend/src/test} \\
+Containerisation & Docker (backend only) & \pathref{backend/Dockerfile} multi-stage build \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Workstreams and contributors}
+\status{IMPLEMENTED}
+
+\pathref{CONTRACT.md} defines a two-workstream split of ownership:
+
+\begin{table}[H]
+\centering
+\caption{Workstream ownership declared in CONTRACT.md}
+\label{tab:workstreams}
+\begin{tabular}{@{}L{3.4cm}L{3.6cm}L{3.6cm}L{4.0cm}@{}}
+\toprule
+\textbf{Workstream} & \textbf{Primary} & \textbf{Backup} & \textbf{Owns} \\
+\midrule
+A -- Frontend & Jay & Ali & \pathref{frontend/**} (UI, routing, state, tests) \\
+B -- Backend & Ali & Jay & \pathref{backend/**}, \pathref{database/**} (API, auth, schema, tests) \\
+Shared & Jay + Ali & -- & \pathref{README.md}, \pathref{CONTRACT.md}, \pathref{.env.example}, API contract, integration \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The names \emph{Jay} and \emph{Ali} appear only as workstream labels taken verbatim from \pathref{CONTRACT.md} and the OpenAPI contact block in \pathref{backend/src/main/java/com/example/lms/config/OpenApiConfig.java}; no other authorship information exists in the repository.
+
+\subsection{Version control state}
+\status{IMPLEMENTED}
+
+At the time of analysis the repository had \textbf{15 commits} on the checked-out branch \pathref{frontend/practice-module}. Local branches: \pathref{main}, \pathref{frontend/foundation-implementation}, \pathref{frontend/practice-module}. Remote branches across three remotes (\pathref{origin}, \pathref{lms-frontend}, \pathref{upstream}) follow the pattern \pathref{backend/foundation-implementation}, \pathref{frontend/foundation-implementation}, \pathref{frontend/practice-module}. Commit messages follow the conventional style mandated by the contract (for example \code{feat(frontend): add coding practice pages and routes}). \status{IMPLEMENTED}
+
+\subsection{Current maturity}
+\status{INFERRED}
+
+Evidence supporting the maturity assessment:
+
+\begin{itemize}
+    \item A full vertical slice of the learning lifecycle exists and is covered by an end-to-end backend test (\pathref{backend/src/test/java/com/example/lms/integration/LmsIntegrationTest.java} -- register, course, lessons, quiz, enroll, progress, certificate, discussion, feedback).
+    \item The frontend integrates the real API through \pathref{frontend/src/api/} (no mock API layer except the explicitly isolated practice dataset).
+    \item 22 backend test methods (10 classes) and 39 frontend test methods (8 files) exist.
+    \item There is no CI/CD pipeline, no deployment configuration beyond a single backend Dockerfile, no licence file, and no production environment documentation.
+\end{itemize}
+
+\noindent Overall maturity: \textbf{feature-complete core MVP in active development; not production-hardened}. This is an assessment, not a repository claim.
+
+\subsection{Scope of this documentation suite}
+\status{IMPLEMENTED}
+
+This document was produced by reading the repository source, configuration, SQL, tests and git history. Sections are modular files under \pathref{documents/latex/sections/}. Where the repository contains no evidence for a topic (business metrics, service-level objectives, CI/CD, payments), the section records that absence rather than inventing content.

@@ -1,0 +1,267 @@
+% ============================================================
+% main.tex - master documentation file
+%
+% Project : Learning Management System (Edvanta) - repository FSJP_LMS
+% Purpose : Evidence-based product and technical documentation suite
+% Output  : PDF (pdflatex), convertible to DOCX via Pandoc (see documents/README.md)
+%
+% Build:
+%   pdflatex main.tex
+%   pdflatex main.tex      (second pass resolves references)
+%   (or: latexmk -pdf main.tex)
+% ============================================================
+\documentclass[11pt,a4paper]{article}
+
+\input{preamble}
+\input{metadata}
+
+\begin{document}
+
+% ------------------------------------------------------------
+% Cover page
+% ------------------------------------------------------------
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Large\textcolor{black!75}{\textbf{\docstatus}}}\\[0.4cm]
+\rule{\textwidth}{1pt}\\[1.2cm]
+
+{\Huge\bfseries \projectname}\\[0.5cm]
+{\Large\itshape \projectsubtitle}\\[2.2cm]
+
+{\LARGE\bfseries \doctitle}\\[0.4cm]
+{\large \docsubtitle}\\[2.5cm]
+
+\begin{tabular}{@{}l@{\hspace{1em}}l@{}}
+\textbf{Product name (UI brand)} & \productname \\
+\textbf{Version} & \docversion \\
+\textbf{Date} & \docdate \\
+\textbf{Author / Generator} & \docauthor \\
+\textbf{Repository root} & \repositoryroot \\
+\textbf{Document status} & \docstatus \\
+\end{tabular}
+
+\vspace{1.8cm}
+{\small\begin{minipage}{0.85\textwidth}
+\textbf{Technology stack}\\
+\techstackline
+\end{minipage}}
+
+\vspace{1.5cm}
+{\footnotesize\begin{minipage}{0.8\textwidth}
+\textit{Confidentiality notice:} \confidentiality
+\end{minipage}}
+
+\vfill
+{\small\textcolor{black!60}{Generated from Repository Analysis -- no author names, metrics, customers or features were invented for this document.}}
+\end{titlepage}
+
+\thispagestyle{empty}
+\clearpage
+
+% ------------------------------------------------------------
+% Front matter
+% ------------------------------------------------------------
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+
+\section*{Document Conventions}
+\addcontentsline{toc}{section}{Document Conventions}
+\label{sec:conventions}
+
+Every significant claim in this documentation suite carries a status classification:
+
+\begin{table}[H]
+\centering
+\caption{Status classification scheme used throughout this document}
+\label{tab:classification-scheme}
+\begin{tabular}{@{}L{3.2cm}L{11.5cm}@{}}
+\toprule
+\textbf{Classification} & \textbf{Meaning} \\
+\midrule
+IMPLEMENTED & Behaviour verified in repository source code; a file path or symbol is cited as evidence. \\
+INFERRED & A conclusion drawn from code structure or configuration, not stated explicitly anywhere. \\
+RECOMMENDED & A suggestion for improvement; it is \emph{not} implemented and must not be read as a feature. \\
+UNKNOWN & Information that cannot be determined from the repository (for example: runtime metrics, business KPIs). \\
+NOT APPLICABLE & The concern does not exist in this repository (for example: no payment system, no CI/CD pipeline). \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Evidence is cited using exact repository paths such as \pathref{backend/src/main/java/com/example/lms/service/CourseService.java} or \pathref{frontend/src/api/client.js}. Business, product and roadmap statements are separated from engineering facts, and recommendations are never presented as shipped functionality.
+
+\clearpage
+\pagenumbering{arabic}
+
+% ------------------------------------------------------------
+% Body sections (modular includes)
+% ------------------------------------------------------------
+\input{sections/project-overview}
+\input{sections/project-description}
+\input{sections/executive-summary}
+\input{sections/brd}
+\input{sections/prd}
+\input{sections/functional-requirements}
+\input{sections/non-functional-requirements}
+\input{sections/technical-requirements}
+\input{sections/system-architecture}
+\input{sections/software-architecture}
+\input{sections/high-level-design}
+\input{sections/low-level-design}
+\input{sections/frontend-architecture}
+\input{sections/backend-architecture}
+\input{sections/database-design}
+\input{sections/api-documentation}
+\input{sections/authentication}
+\input{sections/authorization}
+\input{sections/user-flows}
+\input{sections/data-flows}
+\input{sections/ui-ux}
+\input{sections/design-system}
+\input{sections/security}
+\input{sections/performance}
+\input{sections/scalability}
+\input{sections/testing}
+\input{sections/deployment}
+\input{sections/cicd}
+\input{sections/integrations}
+\input{sections/configuration}
+\input{sections/seo}
+\input{sections/aeo}
+\input{sections/geo}
+\input{sections/known-issues}
+\input{sections/technical-debt}
+\input{sections/roadmap}
+\input{sections/development-guidelines}
+\input{sections/contribution-guide}
+\input{sections/glossary}
+
+% ------------------------------------------------------------
+% Appendix - references (external standards and official docs)
+% ------------------------------------------------------------
+\appendix
+\section{References}
+\label{sec:references}
+
+The following external standards, specifications and official documentation were consulted for the technologies actually used in this repository. No fictitious citations are included.
+
+\begin{thebibliography}{99}
+
+\bibitem{springboot}
+Spring Documentation.
+\emph{Spring Boot Reference Documentation} (3.3.x).
+\url{https://docs.spring.io/spring-boot/reference/}
+
+\bibitem{springsecurity}
+Spring Security Documentation.
+\emph{Spring Security Reference}.
+\url{https://docs.spring.io/spring-security/reference/}
+
+\bibitem{springdatajpa}
+Spring Data JPA Documentation.
+\url{https://docs.spring.io/spring-data/jpa/reference/}
+
+\bibitem{jjwt}
+JJWT (JSON Web Token for Java).
+\emph{JJWT 0.12.x Documentation}.
+\url{https://github.com/jwtk/jjwt}
+
+\bibitem{rfc7519}
+IETF RFC 7519.
+\emph{JSON Web Token (JWT)}.
+\url{https://datatracker.ietf.org/doc/html/rfc7519}
+
+\bibitem{rfc7517}
+IETF RFC 7517.
+\emph{JSON Web Key (JWK)}.
+\url{https://datatracker.ietf.org/doc/html/rfc7517}
+
+\bibitem{springdoc}
+springdoc-openapi.
+\emph{OpenAPI 3 for Spring Boot} (2.6.0).
+\url{https://springdoc.org/}
+
+\bibitem{openapi}
+OpenAPI Initiative.
+\emph{OpenAPI Specification 3.1}.
+\url{https://spec.openapis.org/oas/latest.html}
+
+\bibitem{react}
+React Documentation.
+\emph{React 18 -- Getting Started}.
+\url{https://react.dev/}
+
+\bibitem{reactrouter}
+React Router Documentation (v6).
+\url{https://reactrouter.com/}
+
+\bibitem{vite}
+Vite Documentation.
+\url{https://vite.dev/}
+
+\bibitem{vitest}
+Vitest Documentation.
+\url{https://vitest.dev/}
+
+\bibitem{antd}
+Ant Design 5 Documentation.
+\url{https://ant.design/docs/react/introduce}
+
+\bibitem{tailwind}
+Tailwind CSS Documentation (v3).
+\url{https://tailwindcss.com/docs}
+
+\bibitem{axios}
+Axios Documentation.
+\url{https://axios-http.com/}
+
+\bibitem{mysql}
+MySQL Reference Manual (8.0).
+\url{https://dev.mysql.com/doc/refman/8.0/en/}
+
+\bibitem{hibernate}
+Hibernate ORM Documentation.
+\url{https://docs.jboss.org/hibernate/orm/current/reference/en/html_single/}
+
+\bibitem{bcrypt}
+\emph{The Bcrypt Password Hashing Function}, RFC 7914.
+\url{https://datatracker.ietf.org/doc/html/rfc7914}
+
+\bibitem{owasp}
+OWASP Foundation.
+\emph{OWASP Top Ten}.
+\url{https://owasp.org/www-project-top-ten/}
+
+\bibitem{owaspjwt}
+OWASP Foundation.
+\emph{JSON Web Token Cheat Sheet for Java}.
+\url{https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html}
+
+\bibitem{webaim}
+WebAIM.
+\emph{Web Content Accessibility Guidelines (WCAG) 2.1 Overview}.
+\url{https://www.w3.org/WAI/standards-guidelines/wcag/}
+
+\bibitem{onecompiler}
+OneCompiler.
+\emph{Embed Code Editor}.
+\url{https://onecompiler.com/embed}
+
+\bibitem{pandoc}
+Pandoc.
+\emph{Pandoc User's Manual} (for optional DOCX conversion).
+\url{https://pandoc.org/MANUAL.html}
+
+\bibitem{mmdc}
+Mermaid Live Editor / mermaid-cli.
+\url{https://mermaid.js.org/}
+
+\end{thebibliography}
+
+\end{document}

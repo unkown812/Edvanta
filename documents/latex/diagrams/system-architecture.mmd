@@ -1,0 +1,32 @@
+flowchart TD
+    B["Browser (Desktop / Tablet / Mobile)"]
+    subgraph FE["Frontend - React 18 SPA (frontend/)"]
+        SP["Single Page App<br/>Vite build, React Router 6"]
+        UI["UI: Ant Design 5 + Tailwind CSS 3"]
+    end
+    subgraph BE["Backend - Spring Boot 3.3.4 (backend/)"]
+        SEC["Spring Security<br/>JWT filter, role checks"]
+        CTL["Controllers (11)<br/>/api/v1/**"]
+        SVC["Services (11)<br/>business logic"]
+        REP["Spring Data JPA<br/>Repositories (13)"]
+    end
+    subgraph DB["Database - MySQL 8 (database/)"]
+        TBL["13 tables<br/>InnoDB / utf8mb4"]
+    end
+    subgraph EXT["External Services (read-only integrations)"]
+        OC["OneCompiler embed<br/>onecompiler.com/embed"]
+        YT["YouTube / video embeds"]
+        GF["Google Fonts"]
+        US["Unsplash fallback images"]
+    end
+    SW["springdoc OpenAPI<br/>/swagger-ui.html (public)"]
+
+    B -->|"HTTPS/HTTP - React Router client rendering"| SP
+    SP --> UI
+    UI -->|"axios - REST calls, Bearer JWT"| SEC
+    SEC --> CTL --> SVC --> REP --> TBL
+    SP -.->|"iframe"| OC
+    SP -.->|"iframe / video"| YT
+    SP -.->|"stylesheet"| GF
+    SP -.->|"thumbnail fallback"| US
+    SEC -.->|"OpenAPI JSON"| SW

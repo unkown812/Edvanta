@@ -1,0 +1,26 @@
+flowchart TD
+    subgraph DEV["Local development (verified in repository)"]
+        DBX["MySQL 8 - database lms<br/>schema.sql + seed.sql / dummy.sql"]
+        BEX["Backend<br/>./mvnw spring-boot:run<br/>port 8080"]
+        FEX["Frontend<br/>npm install - - npm run dev (vite)<br/>port 3000"]
+    end
+    subgraph ENV["Environment variables (.env.example)"]
+        V1["PORT, DB_URL, DB_USERNAME,<br/>DB_PASSWORD, JWT_SECRET,<br/>JWT_EXPIRATION"]
+        V2["VITE_API_BASE_URL<br/>(build-time)"]
+    end
+    subgraph DOCKER["Container build (backend/Dockerfile only)"]
+        D1["Stage 1: eclipse-temurin:21-jdk-alpine<br/>mvn clean package -DskipTests"]
+        D2["Stage 2: eclipse-temurin:21-jre-alpine<br/>java -jar app.jar, EXPOSE 8080"]
+    end
+    subgraph GAPS["Not present in repository"]
+        G1["No CI/CD workflow (.github absent)"]
+        G2["No docker-compose.yml"]
+        G3["No frontend Dockerfile / hosting config"]
+        G4["No database migration tool"]
+    end
+    V1 --> BEX
+    V2 --> FEX
+    DBX -->|"JDBC - ddl-auto: update"| BEX
+    FEX -->|"axios: VITE_API_BASE_URL or http://localhost:8080"| BEX
+    D1 --> D2
+    BEX -.->|"equivalent run target"| D2

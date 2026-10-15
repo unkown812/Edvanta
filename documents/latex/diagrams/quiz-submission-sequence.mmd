@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor L as Learner
+    participant Q as QuizPage / QuizResult (React)
+    participant API as quizApi (axios)
+    participant QC as QuizController
+    participant QS as QuizService
+    participant DB as MySQL
+
+    L->>Q: Open /quizzes/:id
+    Q->>API: GET /api/v1/quizzes/{quizId}
+    API->>QC: Bearer JWT
+    QC->>QS: getQuizById
+    QS->>DB: quiz + questions (answers stripped for LEARNER)
+    DB-->>Q: questions without correct_option
+    Q->>Q: start countdown timer (timeLimitMinutes)
+
+    L->>Q: Answer questions, press Submit
+    Q->>API: POST /api/v1/quizzes/{quizId}/attempts<br/>{"answers":[{questionId, selectedOption}]}
+    API->>QC: 201 target
+    QC->>QS: submitQuiz
+    QS->>DB: load questions, compare selectedOption vs correct_option
+    QS->>QS: score = earned/possible x 100, passed if >= passingScore
+    QS->>DB: insert quiz_attempt + quiz_attempt_answers
+    QS-->>Q: 201 ApiResponse QuizAttemptResponse
+    Q->>Q: render QuizResult (score, percentage, pass, per-question review)

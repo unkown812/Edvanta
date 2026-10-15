@@ -1,0 +1,129 @@
+\section{Low-Level Design}
+\label{sec:low-level-design}
+
+Low-level design documents the principal classes and components, their responsibilities, state, data access and dependencies. Symbols are cited exactly as they appear in source.
+
+\subsection{Backend -- service layer detail}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Service classes, responsibilities and key methods}
+\label{tab:lld-services}
+\begin{tabular}{@{}L{3.0cm}L{5.4cm}L{5.8cm}@{}}
+\toprule
+\textbf{Service} & \textbf{Responsibility} & \textbf{Key methods / rules} \\
+\midrule
+\code{AuthService} & Registration, login & \code{register} (409 on duplicate email, BCrypt, issues JWT, honours requested role); \code{login} (AuthenticationManager, 401 on bad credentials) \\
+\code{UserService} & Profile read/update & \code{updateUser} (self or ADMIN; role change only by ADMIN); \code{getUserById} contains a no-op learner guard (defect) \\
+\code{CourseService} & Catalogue CRUD & \code{getAllCourses} (Specification: search/category/status/instructor); \code{validateCourseOwnership} (admin or owning instructor); computed \code{totalLessons}, \code{totalEnrolled} \\
+\code{CategoryService} & Category CRUD & Duplicate-name conflict check (case-insensitive) \\
+\code{LessonService} & Lesson CRUD & Ownership via CourseService; default \code{orderIndex} = count+1; merges per-user completion flag \\
+\code{EnrollmentService} & Enrol/drop/list & Duplicate \code{ENROLLED} $\rightarrow$ 409; re-enrol resets COMPLETED/DROPPED; \code{unenroll} sets DROPPED; self-or-ADMIN listing \\
+\code{ProgressService} & Progress tracking & Find-or-create per user+lesson; \code{completed} and \code{percentage} kept consistent (100\% $\Leftrightarrow$ completed); auto-completes enrolment at 100\% \\
+\code{QuizService} & Quiz authoring \& scoring & \code{includeAnswers} only for INSTRUCTOR/ADMIN; \code{submitQuiz} scores \code{earned/possible}, pass $\geq$ passing score; results scoped by role/ownership \\
+\code{DiscussionService} & Threads \& replies & Top-level listing (\code{parentIsNull}); delete restricted to author/ADMIN; no enrolment gate \\
+\code{FeedbackService} & Ratings & Enrolment required; one row per user+course (409 otherwise); edit restricted to author/ADMIN \\
+\code{CertificateService} & Credential issuance & Eligibility: enrolled + all lessons complete + every quiz passed; idempotent; sets enrolment COMPLETED; code \code{LMS-xxxxxxxx-NNNN}; grade hard-coded DISTINCTION \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Backend -- representative method detail}
+\status{IMPLEMENTED}
+
+\begin{lstlisting}[language=Java,caption={Ownership check used by course/lesson/quiz mutations (CourseService.validateCourseOwnership)}]
+private void validateCourseOwnership(Course course, UserPrincipal currentUser) {
+    if (currentUser.getRole() == User.Role.ADMIN) return;
+    boolean owner = currentUser.getRole() == User.Role.INSTRUCTOR
+            && course.getInstructor().getId().equals(currentUser.getId());
+    if (!owner) throw new ForbiddenException(
+            "You do not have permission to modify this course");
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java,caption={Authoritative quiz scoring rule (QuizService.submitQuiz excerpt)}]
+boolean isCorrect = question.getCorrectOption()
+        .equalsIgnoreCase(submission.getSelectedOption().trim());
+// earnedScore += points when correct; totalPossiblePoints over submitted answers
+double scorePercentage = totalPossiblePoints > 0
+        ? ((double) earnedScore / totalPossiblePoints) * 100.0 : 0.0;
+boolean passed = scorePercentage >= quiz.getPassingScore(); // default 70
+\end{lstlisting}
+
+\noindent \textbf{Design note:} because \code{totalPossiblePoints} only accumulates points of questions present in the submission, unanswered questions do not reduce the percentage. \status{IMPLEMENTED (behaviour) -- see Section~\ref{sec:known-issues}}.
+
+\subsection{Backend -- persistence access}
+\status{IMPLEMENTED}
+
+\begin{itemize}
+    \item All 13 repositories extend \texttt{JpaRepository$<$Entity, Long$>$} with derived query methods (e.g.\ \code{findByEmail}, \code{existsByQuizIdAndUserIdAndPassedTrue}, \code{findByCourseIdAndParentIsNullOrderByCreatedAtDesc}).
+    \item No native queries, no \code{JdbcTemplate}, no specification API except \code{CourseRepository.findAll(Specification)}.
+    \item Fetch strategy: \code{@ManyToOne} default EAGER for user/course links used in responses, LAZY for lesson/course back-references; collections (\code{Quiz.questions}, \code{QuizAttempt.answers}, \code{Discussion.replies}) are LAZY with cascade ALL + orphanRemoval.
+    \item Timestamps set by \code{@PrePersist}/\code{@PreUpdate} callbacks inside entities.
+\end{itemize}
+
+\subsection{Backend -- data initialisation logic}
+\status{IMPLEMENTED}
+
+\pathref{backend/src/main/java/com/example/lms/config/DataInitializer.java} runs on every startup:
+\begin{enumerate}
+    \item If \code{categoryRepository.count() == 0}: insert 4 categories (Web Development, Computer Science, Cloud \& DevOps, Data Science \& AI).
+    \item If \code{userRepository.count() == 0}: insert 3 users with BCrypt-encoded \emph{hardcoded} passwords: \code{admin@example.com}/\code{admin123} (ADMIN), \code{instructor@example.com}/\code{password123} (INSTRUCTOR), \code{learner@example.com}/\code{password123} (LEARNER).
+\end{enumerate}
+
+\noindent There is no profile or property guard; the seed runs on any empty database, including production. \textbf{Finding S-02, Section~\ref{sec:security}}.
+
+\subsection{Frontend -- state and data access detail}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Frontend state, storage and data access}
+\label{tab:lld-frontend-state}
+\begin{tabular}{@{}L{3.4cm}L{5.6cm}L{5.2cm}@{}}
+\toprule
+\textbf{Concern} & \textbf{Implementation} & \textbf{State/keys} \\
+\midrule
+Session & \pathref{frontend/src/context/AuthContext.jsx} & \code{lms_auth_token}, \code{lms_auth_user}; \code{isLoading} restore gate \\
+Derived auth & \code{role}, \code{isAuthenticated}, \code{isLearner/isInstructor/isAdmin} & Computed on each context value build \\
+Route guards & \pathref{frontend/src/routes/ProtectedRoute.jsx} & loading $\rightarrow$ spinner; unauth $\rightarrow$ \code{/login?redirect=}; wrong role $\rightarrow$ 403 card \\
+HTTP & \pathref{frontend/src/api/client.js} & base URL \code{VITE_API_BASE_URL} or \code{http://localhost:8080}; 15 s timeout; Bearer injection; envelope unwrapping \\
+Page data & Local \code{useState} + \code{useEffect} fetches & loading/error/data triples per page \\
+URL query & \code{useSearchParams} & \code{lesson}, \code{problem}, \code{redirect} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Frontend -- key component behaviours}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Representative component logic}
+\label{tab:lld-components}
+\begin{tabular}{@{}L{3.4cm}L{9.8cm}@{}}
+\toprule
+\textbf{Component} & \textbf{Behaviour} \\
+\midrule
+\pathref{frontend/src/components/LessonPlayer.jsx} & Detects media type (YouTube/Vimeo/\code{.mp4} $\rightarrow$ embed; other URL $\rightarrow$ external-resource button; none $\rightarrow$ text lesson); \code{recordLessonProgress} posts \code{{completed: true, completionPercentage: 100, watchTimeSeconds}} \\
+\pathref{frontend/src/components/QuizPage.jsx} & One-question-at-a-time with palette; countdown from \code{timeLimitMinutes}; confirmation modal on partial submit; delegates to \code{QuizResult} \\
+\pathref{frontend/src/components/practice/OneCompilerEditor.jsx} & Builds embed URL (language slug + \code{listenToEvents}); injects starter code via \code{postMessage} on load, after 400 ms, and on button click \\
+\pathref{frontend/src/components/EnrollmentButton.jsx} & Unauth $\rightarrow$ login redirect; instructor $\rightarrow$ blocked; enrolled $\rightarrow$ Continue Learning (+ optional Drop); else enrol via API \\
+\pathref{frontend/src/components/CertificateCard.jsx} & Renders code/learner/course/grade/date; \code{window.print()} for PDF saving \\
+\pathref{frontend/src/components/InstructorDashboard.jsx} & Client-side course scoping; tabs for Lessons/Assessments; modals for course/lesson/quiz authoring; submissions modal with pass/fail badges \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Dependencies (internal)}
+\status{IMPLEMENTED}
+
+\begin{lstlisting}[language=bash,caption={Internal dependency direction (no cycles beyond declared parent-child)}]
+Controller --> Service --> Repository --> Entity
+Service   --> other Service (CourseService <-- Lesson/Quiz/Certificate/Enrollment)
+Service   --> Security (UserPrincipal for identity/role)
+Component --> api module --> client (axios) --> backend
+Page      --> components --> api modules
+Context   --> authApi ; Pages --> useAuth()
+\end{lstlisting}

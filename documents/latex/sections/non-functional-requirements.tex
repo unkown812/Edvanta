@@ -1,0 +1,107 @@
+\section{Non-Functional Requirements}
+\label{sec:non-functional-requirements}
+
+Non-functional requirements (NFRs) are assessed against the repository. \status{IMPLEMENTED} = satisfied by code; \status{PARTIAL} = partially satisfied with evidence; \status{NOT IMPLEMENTED} = no evidence; \status{UNKNOWN} = cannot be determined from the repository.
+
+\subsection{Security NFRs}
+\begin{table}[H]
+\centering
+\caption{Security non-functional requirements}
+\label{tab:nfr-security}
+\begin{tabular}{@{}C{1.4cm}L{8.8cm}L{3.8cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Assessment} \\
+\midrule
+NFR-SEC-01 & Passwords stored hashed (never plaintext) & IMPLEMENTED -- BCrypt \\
+NFR-SEC-02 & Authentication via short-lived signed tokens & PARTIAL -- 24 h JWT, no rotation/revocation \\
+NFR-SEC-03 & Authorisation enforced server-side on every protected operation & PARTIAL -- method security present; several service-level gaps (Section~\ref{sec:security}) \\
+NFR-SEC-04 & Secrets supplied via environment, never committed & NOT IMPLEMENTED -- default JWT secret and seed credentials committed \\
+NFR-SEC-05 & Safe CORS configuration & NOT IMPLEMENTED -- wildcard origin + credentials \\
+NFR-SEC-06 & SQL injection prevention & IMPLEMENTED -- JPA parameterised queries, no string-concatenated SQL found \\
+NFR-SEC-07 & XSS prevention & IMPLEMENTED (client) -- React escapes output; no \code{dangerouslySetInnerHTML} found \\
+NFR-SEC-08 & CSRF protection & BY DESIGN N/A -- stateless JWT, CSRF disabled; acceptable only with strict CORS (currently violated) \\
+NFR-SEC-09 & Rate limiting / brute-force protection & NOT IMPLEMENTED -- no rate limiter dependency or filter \\
+NFR-SEC-10 & Transport security (HTTPS) enforcement & NOT IMPLEMENTED in repository \\
+NFR-SEC-11 & Audit logging of privileged actions & NOT IMPLEMENTED -- no audit table/appender \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Performance NFRs}
+\begin{table}[H]
+\centering
+\caption{Performance non-functional requirements}
+\label{tab:nfr-performance}
+\begin{tabular}{@{}C{1.4cm}L{8.8cm}L{3.8cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Assessment} \\
+\midrule
+NFR-PERF-01 & API response targets (e.g.\ p95 $<$ 500 ms) & UNKNOWN -- no benchmarks, thresholds or APM exist \\
+NFR-PERF-02 & List endpoints shall paginate large datasets & NOT IMPLEMENTED -- all list endpoints return full collections \\
+NFR-PERF-03 & HTTP client shall use bounded timeouts & IMPLEMENTED -- axios timeout 15\,000 ms \\
+NFR-PERF-04 & Repeated lookups should be cached & NOT IMPLEMENTED -- no cache abstraction; every request hits the DB \\
+NFR-PERF-05 & Avoid chatty client patterns & PARTIAL -- known N+1 waterfall in LearnerDashboard; per-keystroke catalogue search \\
+NFR-PERF-06 & Database indexes for hot access paths & IMPLEMENTED -- 20 declared indexes in \pathref{database/schema.sql} \\
+NFR-PERF-07 & Payload efficiency & PARTIAL -- no field projection; full entity graphs serialised through DTOs \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Scalability NFRs}
+\begin{table}[H]
+\centering
+\caption{Scalability non-functional requirements}
+\label{tab:nfr-scalability}
+\begin{tabular}{@{}C{1.4cm}L{8.8cm}L{3.8cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Assessment} \\
+\midrule
+NFR-SCL-01 & Server shall be stateless to allow horizontal scaling & IMPLEMENTED -- \code{SessionCreationPolicy.STATELESS}, JWT in client \\
+NFR-SCL-02 & Multiple backend instances shall run behind a load balancer & NOT IMPLEMENTED -- no deployment topology in repository \\
+NFR-SCL-03 & Schema evolution shall use versioned migrations & NOT IMPLEMENTED -- \code{ddl-auto: update} only; no Flyway/Liquibase \\
+NFR-SCL-04 & Read scalability via replicas/connection pooling & UNKNOWN -- relies on driver defaults; no pool tuning \\
+NFR-SCL-05 & Frontend shall serve static assets via CDN & NOT IMPLEMENTED -- plain Vite \code{dist/} output \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Usability, accessibility and compatibility}
+\begin{table}[H]
+\centering
+\caption{Usability and accessibility requirements}
+\label{tab:nfr-usability}
+\begin{tabular}{@{}C{1.4cm}L{8.8cm}L{3.8cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Assessment} \\
+\midrule
+NFR-USA-01 & Responsive usability on desktop, tablet, mobile & IMPLEMENTED (contract section 17; responsive Tailwind classes, mobile drawer nav) \\
+NFR-USA-02 & Loading, empty, error and retry states on major pages & IMPLEMENTED -- LoadingState/ErrorState/EmptyState + tests \\
+NFR-USA-03 & WCAG 2.1 AA conformance & PARTIAL -- \code{role="alert"}, \code{role="status"}, \code{role="progressbar"}, focus-visible styles exist; no audit, no axe tests, missing landmarks/alt text coverage \\
+NFR-USA-04 & Consistent form validation messages & IMPLEMENTED -- antd rules + server \code{VALIDATION_ERROR} details \\
+NFR-USA-05 & Browser support statement & UNKNOWN -- none declared; Vite default modern-browser targets \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Reliability, maintainability and compliance}
+\begin{table}[H]
+\centering
+\caption{Reliability and maintainability requirements}
+\label{tab:nfr-reliability}
+\begin{tabular}{@{}C{1.4cm}L{8.8cm}L{3.8cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Assessment} \\
+\midrule
+NFR-REL-01 & Consistent error handling across the API & IMPLEMENTED -- GlobalExceptionHandler, 6 exception types \\
+NFR-REL-02 & Automated regression suite run in CI & PARTIAL -- suites exist (61 tests) but no CI executes them \\
+NFR-REL-03 & Structured logging with sensible levels & PARTIAL -- SLF4J levels configured; no JSON/appender/rotation strategy \\
+NFR-REL-04 & Health checks / readiness probes & NOT IMPLEMENTED -- no Actuator dependency \\
+NFR-REL-05 & Backup and recovery procedure & NOT IMPLEMENTED -- no scripts or docs \\
+NFR-MAINT-01 & Layered, documented architecture & IMPLEMENTED -- layered backend, modular frontend, CONTRACT.md \\
+NFR-MAINT-02 & Naming conventions enforced & IMPLEMENTED -- canonical naming lists in \pathref{CONTRACT.md} section 15 \\
+NFR-MAINT-03 & Linting/static analysis & NOT IMPLEMENTED -- no ESLint/Prettier/SpotBugs configuration \\
+NFR-CMP-01 & Personal-data handling (privacy policy, consent) & NOT IMPLEMENTED -- no privacy policy artefacts \\
+NFR-CMP-02 & Licence clarity & NOT IMPLEMENTED -- MIT claimed in README; no LICENSE file \\
+\bottomrule
+\end{tabular}
+\end{table}

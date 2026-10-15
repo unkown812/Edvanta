@@ -1,0 +1,19 @@
+flowchart TD
+    subgraph PKG["backend/src/main/java/com/example/lms/"]
+        CFG["config/<br/>SecurityConfig, DataInitializer,<br/>OpenApiConfig"]
+        SEC["security/<br/>JwtTokenProvider, JwtAuthenticationFilter,<br/>CustomUserDetailsService, UserPrincipal,<br/>JwtAuthenticationEntryPoint"]
+        CTL["controller/ (11 classes)<br/>@RestController + @PreAuthorize"]
+        DTO["dto/request + dto/response<br/>validation, ApiResponse, ErrorResponse"]
+        SVC["service/ (11 classes)<br/>business rules"]
+        EXC["exception/<br/>GlobalExceptionHandler + 6 exceptions"]
+        REP["repository/ (13 interfaces)<br/>Spring Data JPA"]
+        ENT["entity/ (13 @Entity classes)<br/>JPA mapping"]
+    end
+    CLIENT["HTTP Client (React frontend)"] -->|"JSON + Bearer token"| SEC
+    SEC -->|"authenticated SecurityContext"| CTL
+    CTL -->|"@Valid DTO"| SVC
+    SVC -->|"entity mapping"| REP
+    REP -->|"JPA / Hibernate"| DB[("MySQL")]
+    SVC -.->|"throws"| EXC
+    CFG -.->|"configures"| SEC
+    CTL -.->|"serialises"| DTO

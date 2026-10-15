@@ -1,0 +1,36 @@
+sequenceDiagram
+    actor U as User
+    participant F as React Frontend
+    participant S as Spring Security Filter Chain
+    participant A as AuthController / AuthService
+    participant D as MySQL
+
+    Note over U,D: Registration / Login
+    U->>F: Submit register or login form
+    F->>A: POST /api/v1/auth/register | /login
+    A->>D: existsByEmail / loadUserByUsername
+    alt Register (duplicate email)
+        A-->>F: 409 RESOURCE_CONFLICT
+    else Login (bad credentials)
+        A-->>F: 401 UNAUTHORIZED "Invalid email or password"
+    else Success
+        A->>A: BCrypt hash (register) or AuthenticationManager authenticate
+        A->>A: JwtTokenProvider.generateToken (sub, email, role, exp 24h)
+        A-->>F: 200/201 {token, tokenType: Bearer, user}
+        F->>F: localStorage lms_auth_token + lms_auth_user
+    end
+
+    Note over U,D: Authenticated request
+    U->>F: Open protected route or API action
+    F->>S: GET/POST /api/v1/... with Authorization Bearer
+    S->>S: JwtAuthenticationFilter - validateToken, loadUserById
+    S->>S: SecurityContext + @PreAuthorize role check
+    alt Valid token + authorized role
+        S->>D: Controller - Service - Repository
+        D-->>S: entity
+        S-->>F: 200 ApiResponse {success, message, data}
+    else Missing / invalid token
+        S-->>F: 401 UNAUTHORIZED JSON (JwtAuthenticationEntryPoint)
+    else Wrong role
+        S-->>F: 403 FORBIDDEN
+    end

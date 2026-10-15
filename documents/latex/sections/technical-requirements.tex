@@ -1,0 +1,119 @@
+\section{Technical Requirements}
+\label{sec:technical-requirements}
+
+This document records the technical requirements \emph{as realised} in the repository. Where a requirement is conventional for this class of system but absent here, it is recorded as such.
+
+\subsection{Technology baseline}
+\status{IMPLEMENTED}
+
+\pathref{CONTRACT.md} section 2 fixes the baseline; \pathref{backend/pom.xml} and \pathref{frontend/package.json} pin the actual versions:
+
+\begin{table}[H]
+\centering
+\caption{Technical baseline and realised versions}
+\label{tab:tech-baseline}
+\begin{tabular}{@{}L{3.6cm}L{4.4cm}L{6.2cm}@{}}
+\toprule
+\textbf{Area} & \textbf{Realised version} & \textbf{Notes} \\
+\midrule
+Java & 21 & \code{<java.version>21</java.version>}; README prerequisites say ``Java 17+'' (drift) \\
+Spring Boot & 3.3.4 & Parent POM; starter-web, data-jpa, security, validation \\
+JJWT & 0.12.6 & HMAC-SHA signing, \code{parseSignedClaims} API \\
+springdoc-openapi & 2.6.0 & OpenAPI 3 + Swagger UI \\
+React & 18.3.1 & Function components, hooks, StrictMode \\
+Vite & 6.0.1 & Dev server port 3000, \code{/api} proxy to 8080 \\
+Ant Design & 5.22.2 & Custom theme tokens in \pathref{frontend/src/App.jsx} \\
+Tailwind CSS & 3.4.16 & Extended token theme in \pathref{frontend/tailwind.config.js} \\
+React Router & 6.28.0 & Declarative route tree with guards \\
+Axios & 1.7.9 & Instance with request/response interceptors \\
+Vitest & 2.1.8 & jsdom environment, Testing Library \\
+MySQL & 8.x (schema targets utf8mb4/InnoDB) & H2 2.x in-memory for tests (\code{MODE=MySQL}) \\
+Maven & Wrapper 3.9.9 & \pathref{backend/.mvn/wrapper/maven-wrapper.properties} \\
+Docker base images & eclipse-temurin 21 (alpine) & Multi-stage backend image \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Runtime and hosting requirements}
+\begin{itemize}
+    \item \textbf{Backend runtime:} Java 21 JRE, port \code{PORT} (default 8080), JDBC connectivity to MySQL (environment \pathref{.env.example}).
+    \item \textbf{Frontend runtime:} static assets served by any HTTP server after \code{npm run build}; during development served by Vite on port 3000.
+    \item \textbf{Database:} MySQL 8 with schema from \pathref{database/schema.sql}; Hibernate \code{ddl-auto: update} also manages schema at boot.
+    \item \textbf{No orchestration requirements are defined} (no docker-compose, Kubernetes manifests, or process manager configs exist).
+\end{itemize}
+\status{IMPLEMENTED}
+
+\subsection{API requirements}
+\begin{itemize}
+    \item All endpoints under \code{/api/v1}; JSON request/response; consistent envelopes (Section~\ref{sec:api-documentation}).
+    \item Authentication: Bearer JWT in \code{Authorization} header; token TTL configured by \code{JWT_EXPIRATION} (default 86\,400\,000 ms).
+    \item Authorisation: URL-level rules in \code{SecurityConfig} plus method-level \code{@PreAuthorize} plus ownership checks inside services.
+    \item Error contract: HTTP status + \texttt{\{error: \{code, message, details?\}\}} body; stack traces never exposed (catch-all returns a generic message).
+    \item API documentation: machine-readable \code{/v3/api-docs} and human Swagger UI \code{/swagger-ui.html}, both public.
+    \item Open change-management rules for breaking changes (\pathref{CONTRACT.md} section 29).
+\end{itemize}
+\status{IMPLEMENTED}
+
+\subsection{Data requirements}
+\begin{itemize}
+    \item 13 entities / tables with foreign keys and unique constraints (Section~\ref{sec:database-design}).
+    \item Identifier strategy: database-generated \code{BIGINT} identity columns (not UUIDs).
+    \item Timestamps maintained by JPA lifecycle callbacks (\code{@PrePersist}/\code{@PreUpdate}).
+    \item Referential integrity via \code{ON DELETE CASCADE} (child rows) and \code{SET NULL} (category on course delete).
+    \item Seed/bootstrap data: \pathref{database/seed.sql}, \pathref{database/dummy.sql} (SQL) plus runtime bootstrap in \pathref{DataInitializer.java}.
+\end{itemize}
+\status{IMPLEMENTED}
+
+\subsection{Authentication and authorisation requirements}
+\begin{itemize}
+    \item Stateless JWT sessions; BCrypt password hashing; roles \code{LEARNER}, \code{INSTRUCTOR}, \code{ADMIN} persisted as strings.
+    \item Frontend guards (\pathref{frontend/src/routes/ProtectedRoute.jsx}) are usability controls only; the backend is the security boundary.
+    \item Token payload claims: subject = user id, \code{email}, \code{role}, issued-at, expires-at.
+\end{itemize}
+\status{IMPLEMENTED (with gaps listed in Section~\ref{sec:security})}
+
+\subsection{Infrastructure requirements}
+\status{PARTIAL}
+
+\begin{table}[H]
+\centering
+\caption{Infrastructure requirement status}
+\label{tab:infra-reqs}
+\begin{tabular}{@{}L{6.4cm}C{3.2cm}L{3.4cm}@{}}
+\toprule
+\textbf{Requirement} & \textbf{Status} & \textbf{Evidence} \\
+\midrule
+Reproducible backend container build & IMPLEMENTED & \pathref{backend/Dockerfile} \\
+Full-stack local environment definition & NOT IMPLEMENTED & no docker-compose.yml \\
+CI/CD pipeline & NOT IMPLEMENTED & no \pathref{.github/} \\
+Secrets management & PARTIAL & env vars documented; defaults committed \\
+Static hosting for frontend & NOT IMPLEMENTED & no hosting config \\
+Monitoring/alerting & NOT IMPLEMENTED & no Actuator/Prometheus/Alerting \\
+Log aggregation & NOT IMPLEMENTED & console logging only \\
+Database backup automation & NOT IMPLEMENTED & absent \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Integration requirements}
+\begin{itemize}
+    \item OneCompiler embedded editor (iframe + \code{postMessage} starter-code injection) -- Section~\ref{sec:integrations}.
+    \item Video providers (YouTube/Vimeo/\code{.mp4}) handled client-side by URL rewriting in \pathref{frontend/src/components/LessonPlayer.jsx}.
+    \item Google Fonts (Inter, JetBrains Mono) loaded at page level; Unsplash fallback thumbnails referenced by absolute URL.
+    \item No payment, email, SMS, OAuth/SSO or webhook integrations exist (excluded by contract).
+\end{itemize}
+\status{IMPLEMENTED}
+
+\subsection{Testing requirements}
+\begin{itemize}
+    \item Backend: JUnit 5 + Mockito + MockMvc; test profile \pathref{backend/src/main/resources/application-test.yml} with H2 (\code{create-drop}, 1 h JWT).
+    \item Frontend: Vitest + Testing Library with jsdom; setup file \pathref{frontend/src/test/setup.js}; mocks per API module.
+    \item Contract requirement: tests are part of feature completion (\pathref{CONTRACT.md} sections 18 and 39).
+    \item Missing: coverage reporting, E2E browser tests, performance tests, security tests (all \status{NOT IMPLEMENTED}).
+\end{itemize}
+\status{IMPLEMENTED (suites) / NOT IMPLEMENTED (tooling gaps)}
+
+\subsection{Monitoring and observability requirements}
+\status{NOT IMPLEMENTED}
+
+Logging levels are configured in \pathref{backend/src/main/resources/application.yml} (\code{com.example.lms: DEBUG} in dev). No metrics, tracing, health endpoints, error-tracking (e.g.\ Sentry) or log shipping exist in the repository. \status{RECOMMENDED} before production.
