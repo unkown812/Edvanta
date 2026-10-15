@@ -1,0 +1,56 @@
+\babel@toc {english}{}\relax 
+\contentsline {table}{\numberline {1}{\ignorespaces Status classification scheme used throughout this document}}{x}{table.caption.1}%
+\contentsline {table}{\numberline {2}{\ignorespaces Top-level repository structure}}{1}{table.caption.2}%
+\contentsline {table}{\numberline {3}{\ignorespaces Technology stack as declared in package manifests}}{2}{table.caption.3}%
+\contentsline {table}{\numberline {4}{\ignorespaces Workstream ownership declared in CONTRACT.md}}{3}{table.caption.4}%
+\contentsline {table}{\numberline {5}{\ignorespaces Product identity attributes extracted from the repository}}{4}{table.caption.5}%
+\contentsline {table}{\numberline {6}{\ignorespaces Personas inferred from seeded accounts and role capabilities}}{5}{table.caption.6}%
+\contentsline {table}{\numberline {7}{\ignorespaces Feature inventory with primary implementation evidence}}{6}{table.caption.7}%
+\contentsline {table}{\numberline {8}{\ignorespaces Architecture summary for stakeholders}}{10}{table.caption.9}%
+\contentsline {table}{\numberline {9}{\ignorespaces Headline limitations for leadership attention (full detail in Section~\ref {sec:security} and Section~\ref {sec:known-issues})}}{12}{table.caption.11}%
+\contentsline {table}{\numberline {10}{\ignorespaces Declared objectives versus implementation status}}{13}{table.caption.12}%
+\contentsline {table}{\numberline {11}{\ignorespaces Stakeholder map}}{14}{table.caption.13}%
+\contentsline {table}{\numberline {12}{\ignorespaces Business requirements register}}{15}{table.caption.14}%
+\contentsline {table}{\numberline {13}{\ignorespaces Available (engineering) success signals}}{16}{table.caption.15}%
+\contentsline {table}{\numberline {14}{\ignorespaces Business-facing risks with repository evidence}}{17}{table.caption.16}%
+\contentsline {table}{\numberline {15}{\ignorespaces PRD goals mapped to implemented capability}}{18}{table.caption.17}%
+\contentsline {table}{\numberline {16}{\ignorespaces Primary user stories}}{19}{table.caption.18}%
+\contentsline {table}{\numberline {17}{\ignorespaces External and internal dependencies}}{20}{table.caption.19}%
+\contentsline {table}{\numberline {18}{\ignorespaces Functional requirements -- authentication}}{22}{table.caption.20}%
+\contentsline {table}{\numberline {19}{\ignorespaces Functional requirements -- courses}}{23}{table.caption.21}%
+\contentsline {table}{\numberline {20}{\ignorespaces Functional requirements -- lessons and player}}{23}{table.caption.22}%
+\contentsline {table}{\numberline {21}{\ignorespaces Functional requirements -- enrollment and progress}}{24}{table.caption.23}%
+\contentsline {table}{\numberline {22}{\ignorespaces Functional requirements -- quizzes}}{25}{table.caption.24}%
+\contentsline {table}{\numberline {23}{\ignorespaces Functional requirements -- discussions, feedback, certificates}}{26}{table.caption.25}%
+\contentsline {table}{\numberline {24}{\ignorespaces Functional requirements -- administration and practice module}}{27}{table.caption.26}%
+\contentsline {table}{\numberline {25}{\ignorespaces Security non-functional requirements}}{28}{table.caption.27}%
+\contentsline {table}{\numberline {26}{\ignorespaces Performance non-functional requirements}}{29}{table.caption.28}%
+\contentsline {table}{\numberline {27}{\ignorespaces Scalability non-functional requirements}}{30}{table.caption.29}%
+\contentsline {table}{\numberline {28}{\ignorespaces Usability and accessibility requirements}}{31}{table.caption.30}%
+\contentsline {table}{\numberline {29}{\ignorespaces Reliability and maintainability requirements}}{32}{table.caption.31}%
+\contentsline {table}{\numberline {30}{\ignorespaces Technical baseline and realised versions}}{33}{table.caption.32}%
+\contentsline {table}{\numberline {31}{\ignorespaces Infrastructure requirement status}}{35}{table.caption.33}%
+\contentsline {table}{\numberline {32}{\ignorespaces Runtime components and responsibilities}}{38}{table.caption.35}%
+\contentsline {table}{\numberline {33}{\ignorespaces Software modules and ownership boundaries}}{41}{table.caption.37}%
+\contentsline {table}{\numberline {34}{\ignorespaces Backend package responsibilities}}{41}{table.caption.38}%
+\contentsline {table}{\numberline {35}{\ignorespaces Frontend module responsibilities}}{42}{table.caption.39}%
+\contentsline {table}{\numberline {36}{\ignorespaces Cross-cutting concerns and their implementation points}}{44}{table.caption.41}%
+\contentsline {table}{\numberline {37}{\ignorespaces Major services and communication channels}}{45}{table.caption.42}%
+\contentsline {table}{\numberline {38}{\ignorespaces API surface by domain}}{47}{table.caption.45}%
+\contentsline {table}{\numberline {39}{\ignorespaces Service classes, responsibilities and key methods}}{49}{table.caption.46}%
+\contentsline {table}{\numberline {40}{\ignorespaces Frontend state, storage and data access}}{51}{table.caption.47}%
+\contentsline {table}{\numberline {41}{\ignorespaces Representative component logic}}{51}{table.caption.48}%
+\contentsline {table}{\numberline {42}{\ignorespaces Frontend route table}}{53}{table.caption.49}%
+\contentsline {table}{\numberline {43}{\ignorespaces Frontend API modules and the endpoints they call}}{54}{table.caption.50}%
+\contentsline {table}{\numberline {44}{\ignorespaces Component inventory (selected, with purpose)}}{55}{table.caption.51}%
+\contentsline {table}{\numberline {45}{\ignorespaces Backend component counts}}{56}{table.caption.52}%
+\contentsline {table}{\numberline {46}{\ignorespaces Security component responsibilities}}{57}{table.caption.53}%
+\contentsline {table}{\numberline {47}{\ignorespaces Exception types and HTTP mapping (from GlobalExceptionHandler)}}{58}{table.caption.54}%
+\contentsline {table}{\numberline {48}{\ignorespaces Database technology and design conventions}}{59}{table.caption.55}%
+\contentsline {table}{\numberline {49}{\ignorespaces Foreign-key relationships and cardinalities}}{63}{table.caption.57}%
+\contentsline {table}{\numberline {50}{\ignorespaces Controller to endpoint-group mapping (verified in controller sources)}}{65}{table.caption.58}%
+\contentsline {table}{\numberline {51}{\ignorespaces Authorization matrix (backend-enforced; frontend mirrors for UX)}}{67}{table.caption.60}%
+\contentsline {table}{\numberline {52}{\ignorespaces Security findings grounded in repository evidence}}{74}{table.caption.64}%
+\contentsline {table}{\numberline {53}{\ignorespaces Known issues with repository evidence}}{80}{table.caption.66}%
+\contentsline {table}{\numberline {54}{\ignorespaces Technical debt register}}{81}{table.caption.67}%
+\contentsline {table}{\numberline {55}{\ignorespaces Project glossary -- terms as used in this repository}}{84}{table.caption.69}%

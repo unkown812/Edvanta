@@ -1,0 +1,12 @@
+\section{CI/CD}
+\label{sec:cicd}
+
+\subsection{Current state}
+\status{IMPLEMENTED (absence verified)}
+
+No \pathref{.github/} workflows, no pipeline configuration, and no automated gates exist in the repository. Builds and tests are manual: \code{./mvnw test} and \code{npm test} / \code{npm run build}.
+
+\subsection{Recommended pipeline}
+\status{RECOMMENDED (not implemented)}
+
+On pull request: backend build plus tests, frontend install plus lint/typecheck plus tests plus production build, and a docs-link check. On merge to \code{main}: image build, migration dry-run, and staged deploy. Branch protections should enforce the CONTRACT.md review rules for shared files. No pipeline must be presented as existing.

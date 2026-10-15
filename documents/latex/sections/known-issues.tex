@@ -1,0 +1,24 @@
+\section{Known Issues}
+\label{sec:known-issues}
+
+\subsection{Recorded defects and inconsistencies}
+\status{IMPLEMENTED (observations, not inventions)}
+
+\begin{table}[H]
+\centering
+\caption{Known issues with repository evidence}
+\label{tab:known-issues}
+\begin{tabular}{@{}L{2.2cm}L{6.0cm}L{6.0cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Issue} & \textbf{Evidence / impact} \\
+\midrule
+K-01 & \code{CertificateService} writes grade \code{DISTINCTION} while the column default is \code{PASS} & Cosmetic inconsistency in \code{certificates} rows \\
+K-02 & Quiz percentage ignores unanswered questions (denominator only counts submitted questions) & Behaviour in quiz scoring service; inflates partial attempts \\
+K-03 & README roadmap lists discussions/feedback as future work although both are implemented & \pathref{README.md} Phase~2 vs.\ discussion/feedback controllers \\
+K-04 & Seed users with hardcoded passwords run on any empty database (no profile guard) & \pathref{backend/src/main/java/com/example/lms/config/DataInitializer.java} \\
+K-05 & Hand-written \pathref{database/schema.sql} can drift from JPA entities under \code{ddl-auto: update} & No migration tooling; untested in CI \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Each item above is observable in the checked-in sources. Fixes belong on the roadmap (Section~\ref{sec:roadmap}) and must update the affected docs.

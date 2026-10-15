@@ -1,0 +1,235 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{Document Conventions}{x}{Doc-Start}%
+\contentsline {section}{\numberline {1}Project Overview}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}What this repository contains}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Repository layout}{1}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Technology stack}{1}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Workstreams and contributors}{2}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Version control state}{3}{subsection.1.5}%
+\contentsline {subsection}{\numberline {1.6}Current maturity}{3}{subsection.1.6}%
+\contentsline {subsection}{\numberline {1.7}Scope of this documentation suite}{3}{subsection.1.7}%
+\contentsline {section}{\numberline {2}Project Description}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Product identity}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Problem statement}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Solution}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Target audience and personas}{5}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Value proposition}{5}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Core feature inventory}{5}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Product workflow}{6}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.8}Use cases}{8}{subsection.2.8}%
+\contentsline {subsection}{\numberline {2.9}Differentiators (repository evidence only)}{8}{subsection.2.9}%
+\contentsline {subsection}{\numberline {2.10}Calls to action present in the UI}{8}{subsection.2.10}%
+\contentsline {subsection}{\numberline {2.11}Visual identity}{8}{subsection.2.11}%
+\contentsline {subsection}{\numberline {2.12}SEO keywords and AEO/GEO pointers}{8}{subsection.2.12}%
+\contentsline {section}{\numberline {3}Executive Summary}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}What the product is}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}The problem it solves}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}The solution in one paragraph}{9}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Core functionality}{9}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Target users}{9}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Technology and architecture}{10}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Current maturity}{11}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Key limitations and risks (headline items)}{11}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Bottom line}{12}{subsection.3.9}%
+\contentsline {section}{\numberline {4}Business Requirements Document (BRD)}{12}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Document purpose}{12}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Business problem}{12}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Business objectives}{13}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Stakeholders}{13}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}User groups}{14}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Business processes}{14}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Business requirements}{14}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Expected outcomes}{15}{subsection.4.8}%
+\contentsline {subsection}{\numberline {4.9}Success metrics}{15}{subsection.4.9}%
+\contentsline {subsection}{\numberline {4.10}Constraints}{16}{subsection.4.10}%
+\contentsline {subsection}{\numberline {4.11}Assumptions}{16}{subsection.4.11}%
+\contentsline {subsection}{\numberline {4.12}Risks}{16}{subsection.4.12}%
+\contentsline {section}{\numberline {5}Product Requirements Document (PRD)}{17}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Product vision}{17}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Problem statement}{17}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Goals and objectives}{17}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Personas}{18}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}User stories}{18}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Use cases}{19}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Features and functional requirements}{19}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}Acceptance criteria}{19}{subsection.5.8}%
+\contentsline {subsection}{\numberline {5.9}Success metrics}{20}{subsection.5.9}%
+\contentsline {subsection}{\numberline {5.10}Constraints}{20}{subsection.5.10}%
+\contentsline {subsection}{\numberline {5.11}Dependencies}{20}{subsection.5.11}%
+\contentsline {subsection}{\numberline {5.12}Risks}{21}{subsection.5.12}%
+\contentsline {subsection}{\numberline {5.13}Future scope}{21}{subsection.5.13}%
+\contentsline {section}{\numberline {6}Functional Requirements}{21}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Authentication and account management (FR-AUTH)}{22}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Course management (FR-COURSE)}{23}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Lessons and learning delivery (FR-LESSON)}{23}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Enrollment and progress (FR-ENR)}{24}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Assessments (FR-QUIZ)}{25}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Social features (FR-SOC) and certificates (FR-CERT)}{26}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Administration (FR-ADM) and practice (FR-PRA)}{27}{subsection.6.7}%
+\contentsline {subsection}{\numberline {6.8}Cross-cutting functional behaviour}{27}{subsection.6.8}%
+\contentsline {section}{\numberline {7}Non-Functional Requirements}{27}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Security NFRs}{28}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Performance NFRs}{29}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Scalability NFRs}{30}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Usability, accessibility and compatibility}{31}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Reliability, maintainability and compliance}{32}{subsection.7.5}%
+\contentsline {section}{\numberline {8}Technical Requirements}{33}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Technology baseline}{33}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Runtime and hosting requirements}{33}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}API requirements}{34}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Data requirements}{34}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Authentication and authorisation requirements}{34}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.6}Infrastructure requirements}{34}{subsection.8.6}%
+\contentsline {subsection}{\numberline {8.7}Integration requirements}{35}{subsection.8.7}%
+\contentsline {subsection}{\numberline {8.8}Testing requirements}{35}{subsection.8.8}%
+\contentsline {subsection}{\numberline {8.9}Monitoring and observability requirements}{35}{subsection.8.9}%
+\contentsline {section}{\numberline {9}System Architecture}{36}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Architecture style}{36}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Runtime components}{38}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Trust boundaries}{38}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Deployment view}{38}{subsection.9.4}%
+\contentsline {subsection}{\numberline {9.5}Architecture decisions (observed)}{38}{subsection.9.5}%
+\contentsline {section}{\numberline {10}Software Architecture}{39}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Module map}{39}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Backend packages (software units)}{41}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Frontend software units}{41}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Component interaction}{42}{subsection.10.4}%
+\contentsline {subsection}{\numberline {10.5}Data ownership and consistency}{44}{subsection.10.5}%
+\contentsline {subsection}{\numberline {10.6}Cross-cutting concerns}{44}{subsection.10.6}%
+\contentsline {section}{\numberline {11}High-Level Design}{44}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Design scope}{44}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Service inventory and communication}{45}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Primary control flows}{45}{subsection.11.3}%
+\contentsline {subsection}{\numberline {11.4}API surface overview}{47}{subsection.11.4}%
+\contentsline {subsection}{\numberline {11.5}Data contracts}{47}{subsection.11.5}%
+\contentsline {subsection}{\numberline {11.6}State management design}{48}{subsection.11.6}%
+\contentsline {subsection}{\numberline {11.7}Error handling design}{48}{subsection.11.7}%
+\contentsline {section}{\numberline {12}Low-Level Design}{48}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Backend -- service layer detail}{48}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Backend -- representative method detail}{50}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Backend -- persistence access}{50}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Backend -- data initialisation logic}{50}{subsection.12.4}%
+\contentsline {subsection}{\numberline {12.5}Frontend -- state and data access detail}{51}{subsection.12.5}%
+\contentsline {subsection}{\numberline {12.6}Frontend -- key component behaviours}{51}{subsection.12.6}%
+\contentsline {subsection}{\numberline {12.7}Dependencies (internal)}{52}{subsection.12.7}%
+\contentsline {section}{\numberline {13}Frontend Architecture}{52}{section.13}%
+\contentsline {subsection}{\numberline {13.1}Application entry and providers}{52}{subsection.13.1}%
+\contentsline {subsection}{\numberline {13.2}Routing}{52}{subsection.13.2}%
+\contentsline {subsection}{\numberline {13.3}Guard semantics}{53}{subsection.13.3}%
+\contentsline {subsection}{\numberline {13.4}Navigation structure}{53}{subsection.13.4}%
+\contentsline {subsection}{\numberline {13.5}API layer}{54}{subsection.13.5}%
+\contentsline {subsection}{\numberline {13.6}Component inventory}{54}{subsection.13.6}%
+\contentsline {subsection}{\numberline {13.7}Practice module structure}{55}{subsection.13.7}%
+\contentsline {subsection}{\numberline {13.8}Build pipeline}{55}{subsection.13.8}%
+\contentsline {section}{\numberline {14}Backend Architecture}{56}{section.14}%
+\contentsline {subsection}{\numberline {14.1}Layered structure}{56}{subsection.14.1}%
+\contentsline {subsection}{\numberline {14.2}Component inventory}{56}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}Request lifecycle}{56}{subsection.14.3}%
+\contentsline {subsection}{\numberline {14.4}Security components in detail}{57}{subsection.14.4}%
+\contentsline {subsection}{\numberline {14.5}DTO and mapping strategy}{57}{subsection.14.5}%
+\contentsline {subsection}{\numberline {14.6}Exception taxonomy}{57}{subsection.14.6}%
+\contentsline {subsection}{\numberline {14.7}Configuration and bootstrap}{58}{subsection.14.7}%
+\contentsline {subsection}{\numberline {14.8}Build and packaging}{58}{subsection.14.8}%
+\contentsline {section}{\numberline {15}Database Design}{58}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Technology and conventions}{58}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}Entity-relationship diagram}{59}{subsection.15.2}%
+\contentsline {subsection}{\numberline {15.3}Tables}{60}{subsection.15.3}%
+\contentsline {subsubsection}{\numberline {15.3.1}users}{60}{subsubsection.15.3.1}%
+\contentsline {subsubsection}{\numberline {15.3.2}categories}{60}{subsubsection.15.3.2}%
+\contentsline {subsubsection}{\numberline {15.3.3}courses}{60}{subsubsection.15.3.3}%
+\contentsline {subsubsection}{\numberline {15.3.4}lessons}{60}{subsubsection.15.3.4}%
+\contentsline {subsubsection}{\numberline {15.3.5}enrollments}{61}{subsubsection.15.3.5}%
+\contentsline {subsubsection}{\numberline {15.3.6}progress}{61}{subsubsection.15.3.6}%
+\contentsline {subsubsection}{\numberline {15.3.7}quizzes}{61}{subsubsection.15.3.7}%
+\contentsline {subsubsection}{\numberline {15.3.8}questions}{61}{subsubsection.15.3.8}%
+\contentsline {subsubsection}{\numberline {15.3.9}quiz\_attempts}{62}{subsubsection.15.3.9}%
+\contentsline {subsubsection}{\numberline {15.3.10}quiz\_attempt\_answers}{62}{subsubsection.15.3.10}%
+\contentsline {subsubsection}{\numberline {15.3.11}discussions}{62}{subsubsection.15.3.11}%
+\contentsline {subsubsection}{\numberline {15.3.12}feedback}{62}{subsubsection.15.3.12}%
+\contentsline {subsubsection}{\numberline {15.3.13}certificates}{62}{subsubsection.15.3.13}%
+\contentsline {subsection}{\numberline {15.4}Relationship summary}{63}{subsection.15.4}%
+\contentsline {subsection}{\numberline {15.5}Indexes and constraints}{63}{subsection.15.5}%
+\contentsline {subsection}{\numberline {15.6}Views, stored procedures, functions, triggers}{64}{subsection.15.6}%
+\contentsline {subsection}{\numberline {15.7}Row-level security and database access control}{64}{subsection.15.7}%
+\contentsline {subsection}{\numberline {15.8}Migrations and schema evolution}{64}{subsection.15.8}%
+\contentsline {subsection}{\numberline {15.9}Entity/schema parity notes}{64}{subsection.15.9}%
+\contentsline {section}{\numberline {16}API Documentation}{64}{section.16}%
+\contentsline {subsection}{\numberline {16.1}Base conventions}{64}{subsection.16.1}%
+\contentsline {subsection}{\numberline {16.2}Endpoint inventory (47 mapped endpoints, 11 controllers)}{65}{subsection.16.2}%
+\contentsline {subsection}{\numberline {16.3}Error model}{65}{subsection.16.3}%
+\contentsline {section}{\numberline {17}Authentication}{66}{section.17}%
+\contentsline {subsection}{\numberline {17.1}Mechanism}{66}{subsection.17.1}%
+\contentsline {subsection}{\numberline {17.2}Validation chain}{66}{subsection.17.2}%
+\contentsline {subsection}{\numberline {17.3}Limitations}{67}{subsection.17.3}%
+\contentsline {section}{\numberline {18}Authorization}{67}{section.18}%
+\contentsline {subsection}{\numberline {18.1}Model}{67}{subsection.18.1}%
+\contentsline {subsection}{\numberline {18.2}Authorization matrix}{67}{subsection.18.2}%
+\contentsline {section}{\numberline {19}User Flows}{68}{section.19}%
+\contentsline {subsection}{\numberline {19.1}Covered flows}{68}{subsection.19.1}%
+\contentsline {subsection}{\numberline {19.2}Flow details}{70}{subsection.19.2}%
+\contentsline {section}{\numberline {20}Data Flows}{70}{section.20}%
+\contentsline {subsection}{\numberline {20.1}Request lifecycle}{70}{subsection.20.1}%
+\contentsline {subsection}{\numberline {20.2}Key data chains}{70}{subsection.20.2}%
+\contentsline {subsection}{\numberline {20.3}What does not exist}{73}{subsection.20.3}%
+\contentsline {section}{\numberline {21}UI/UX}{73}{section.21}%
+\contentsline {subsection}{\numberline {21.1}Page inventory}{73}{subsection.21.1}%
+\contentsline {subsection}{\numberline {21.2}State contract}{73}{subsection.21.2}%
+\contentsline {subsection}{\numberline {21.3}Responsive and accessible behaviour}{73}{subsection.21.3}%
+\contentsline {section}{\numberline {22}Design System}{73}{section.22}%
+\contentsline {subsection}{\numberline {22.1}Tokens}{73}{subsection.22.1}%
+\contentsline {subsection}{\numberline {22.2}Component library}{73}{subsection.22.2}%
+\contentsline {subsection}{\numberline {22.3}Usage rule}{74}{subsection.22.3}%
+\contentsline {section}{\numberline {23}Security}{74}{section.23}%
+\contentsline {subsection}{\numberline {23.1}Implemented controls}{74}{subsection.23.1}%
+\contentsline {subsection}{\numberline {23.2}Findings}{74}{subsection.23.2}%
+\contentsline {subsection}{\numberline {23.3}Production requirements}{74}{subsection.23.3}%
+\contentsline {section}{\numberline {24}Performance}{75}{section.24}%
+\contentsline {subsection}{\numberline {24.1}Observed characteristics}{75}{subsection.24.1}%
+\contentsline {subsection}{\numberline {24.2}Bottleneck risks}{75}{subsection.24.2}%
+\contentsline {subsection}{\numberline {24.3}Recommendations}{75}{subsection.24.3}%
+\contentsline {section}{\numberline {25}Scalability}{75}{section.25}%
+\contentsline {subsection}{\numberline {25.1}Current posture}{75}{subsection.25.1}%
+\contentsline {subsection}{\numberline {25.2}Scaling path}{76}{subsection.25.2}%
+\contentsline {section}{\numberline {26}Testing}{76}{section.26}%
+\contentsline {subsection}{\numberline {26.1}Backend tests}{76}{subsection.26.1}%
+\contentsline {subsection}{\numberline {26.2}Frontend tests}{77}{subsection.26.2}%
+\contentsline {subsection}{\numberline {26.3}Coverage contract}{77}{subsection.26.3}%
+\contentsline {section}{\numberline {27}Deployment}{77}{section.27}%
+\contentsline {subsection}{\numberline {27.1}Verified development topology}{77}{subsection.27.1}%
+\contentsline {subsection}{\numberline {27.2}Containerisation}{77}{subsection.27.2}%
+\contentsline {subsection}{\numberline {27.3}Production checklist}{77}{subsection.27.3}%
+\contentsline {section}{\numberline {28}CI/CD}{77}{section.28}%
+\contentsline {subsection}{\numberline {28.1}Current state}{77}{subsection.28.1}%
+\contentsline {subsection}{\numberline {28.2}Recommended pipeline}{78}{subsection.28.2}%
+\contentsline {section}{\numberline {29}Integrations}{78}{section.29}%
+\contentsline {subsection}{\numberline {29.1}Embedded practice editor}{78}{subsection.29.1}%
+\contentsline {subsection}{\numberline {29.2}External origins}{78}{subsection.29.2}%
+\contentsline {subsection}{\numberline {29.3}Not integrated}{78}{subsection.29.3}%
+\contentsline {section}{\numberline {30}Configuration}{78}{section.30}%
+\contentsline {subsection}{\numberline {30.1}Backend configuration}{78}{subsection.30.1}%
+\contentsline {subsection}{\numberline {30.2}Frontend configuration}{78}{subsection.30.2}%
+\contentsline {subsection}{\numberline {30.3}Database bootstrap}{78}{subsection.30.3}%
+\contentsline {section}{\numberline {31}SEO}{79}{section.31}%
+\contentsline {subsection}{\numberline {31.1}Current state}{79}{subsection.31.1}%
+\contentsline {subsection}{\numberline {31.2}Recommendations}{79}{subsection.31.2}%
+\contentsline {section}{\numberline {32}AEO (Answer-Engine Optimisation)}{79}{section.32}%
+\contentsline {subsection}{\numberline {32.1}Current state}{79}{subsection.32.1}%
+\contentsline {subsection}{\numberline {32.2}Recommendations}{79}{subsection.32.2}%
+\contentsline {section}{\numberline {33}GEO (Generative-Engine Optimisation)}{79}{section.33}%
+\contentsline {subsection}{\numberline {33.1}Current state}{79}{subsection.33.1}%
+\contentsline {subsection}{\numberline {33.2}Recommendations}{79}{subsection.33.2}%
+\contentsline {section}{\numberline {34}Known Issues}{80}{section.34}%
+\contentsline {subsection}{\numberline {34.1}Recorded defects and inconsistencies}{80}{subsection.34.1}%
+\contentsline {section}{\numberline {35}Technical Debt}{80}{section.35}%
+\contentsline {subsection}{\numberline {35.1}Debt register}{80}{subsection.35.1}%
+\contentsline {section}{\numberline {36}Roadmap}{81}{section.36}%
+\contentsline {subsection}{\numberline {36.1}Reconciled position}{81}{subsection.36.1}%
+\contentsline {subsection}{\numberline {36.2}Phased plan}{81}{subsection.36.2}%
+\contentsline {section}{\numberline {37}Development Guidelines}{83}{section.37}%
+\contentsline {subsection}{\numberline {37.1}Layer discipline}{83}{subsection.37.1}%
+\contentsline {subsection}{\numberline {37.2}Working rules}{83}{subsection.37.2}%
+\contentsline {section}{\numberline {38}Contribution Guide}{83}{section.38}%
+\contentsline {subsection}{\numberline {38.1}Workflow}{83}{subsection.38.1}%
+\contentsline {subsection}{\numberline {38.2}Definition of Done (abridged)}{83}{subsection.38.2}%
+\contentsline {section}{\numberline {39}Glossary}{84}{section.39}%
+\contentsline {section}{\numberline {A}References}{84}{appendix.A}%

@@ -1,0 +1,31 @@
+\section{User Flows}
+\label{sec:user-flows}
+
+\subsection{Covered flows}
+\status{IMPLEMENTED}
+
+The end-to-end backend test \pathref{backend/src/test/java/com/example/lms/integration/LmsIntegrationTest.java} exercises the canonical flows: register $\rightarrow$ login $\rightarrow$ create course $\rightarrow$ add lessons $\rightarrow$ create quiz $\rightarrow$ enroll $\rightarrow$ update progress $\rightarrow$ submit quiz $\rightarrow$ issue certificate $\rightarrow$ post discussion and feedback. Frontend routes for each step live in \pathref{frontend/src/routes/AppRoutes.jsx} (19 routes including \code{/courses}, \code{/courses/:id}, \code{/courses/:courseId/learn}, \code{/quizzes/:id}, \code{/learner}, \code{/instructor}, \code{/admin}, \code{/profile}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\textwidth]{diagrams/learning-lifecycle.png}
+\caption{Learning lifecycle -- registration through certificate}
+\label{fig:learning-lifecycle-flows}
+\end{figure}
+
+\subsection{Flow details}
+
+\begin{enumerate}
+\item \textbf{Registration and login:} \code{/register} $\rightarrow$ \code{POST /api/v1/auth/register} $\rightarrow$ \code{/login} $\rightarrow$ \code{POST /api/v1/auth/login} $\rightarrow$ JWT stored $\rightarrow$ role dashboard.
+\item \textbf{Enrollment:} catalogue (\code{/courses}) $\rightarrow$ detail (\code{/courses/:id}) $\rightarrow$ enroll (\code{POST /api/v1/courses/\{courseId\}/enroll}) $\rightarrow$ learn view unlocked. Duplicate enrollment is rejected with 409.
+\item \textbf{Learning:} \code{/courses/:courseId/learn} renders \pathref{frontend/src/pages/LearningPage.jsx}; lesson completion posts progress; the dashboard reflects persisted state.
+\item \textbf{Assessment:} \code{/quizzes/:id} renders \pathref{frontend/src/pages/QuizTakingPage.jsx}; submission is validated and scored server-side; the result view shows the authoritative score.
+\item \textbf{Certificate:} eligibility is verified by \pathref{backend/src/main/java/com/example/lms/service/CertificateService.java}; the learner downloads the certificate from the learner dashboard.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{diagrams/quiz-submission-sequence.png}
+\caption{Quiz submission sequence -- client attempt, server validation, persisted result}
+\label{fig:quiz-seq}
+\end{figure}

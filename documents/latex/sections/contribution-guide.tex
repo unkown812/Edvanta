@@ -1,0 +1,12 @@
+\section{Contribution Guide}
+\label{sec:contribution-guide}
+
+\subsection{Workflow}
+\status{IMPLEMENTED (per CONTRACT.md sections 22--25)}
+
+Develop on workstream branches (\code{frontend/...}, \code{backend/...}), never directly on \code{main}. Every PR states summary, changes, files, tests run, expected behaviour and known issues. Shared files (\pathref{README.md}, \pathref{CONTRACT.md}, \pathref{.env.example}, API and schema contracts, auth rules, major dependencies) require cross-workstream review. AI-assisted contributors must read \pathref{CONTRACT.md} and \pathref{README.md} first, stay inside the assigned workstream, follow canonical naming, and report failures honestly.
+
+\subsection{Definition of Done (abridged)}
+\status{IMPLEMENTED}
+
+Feature, auth, course, enrollment, learning, assessment, discussion/feedback, certificate, frontend, backend and integration checklists in CONTRACT.md section 32 must all pass -- including real-backend integration with no required mock data and verified end-to-end flows.

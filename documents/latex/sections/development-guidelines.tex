@@ -1,0 +1,12 @@
+\section{Development Guidelines}
+\label{sec:development-guidelines}
+
+\subsection{Layer discipline}
+\status{IMPLEMENTED (per CONTRACT.md)}
+
+Backend: controller (HTTP + validation) $\rightarrow$ service (business rules, transactions) $\rightarrow$ repository (persistence) $\rightarrow$ database; entities in \pathref{backend/src/main/java/com/example/lms/entity/}, contracts in \pathref{backend/src/main/java/com/example/lms/dto/}. Never place queries in controllers or business rules in DTOs. Frontend: pages in \pathref{frontend/src/pages/}, reusable UI in \pathref{frontend/src/components/}, backend communication only through \pathref{frontend/src/api/}, shared logic in \pathref{frontend/src/hooks/}, shared state in \pathref{frontend/src/context/}.
+
+\subsection{Working rules}
+\status{IMPLEMENTED}
+
+Respect workstream ownership (\pathref{frontend/**} vs.\ \pathref{backend/**} + \pathref{database/**}); API and schema changes require agreement before integration; keep commits focused (\code{feat(frontend): ...}, \code{fix(backend): ...}); run \code{./mvnw test} and \code{npm test} before every PR; never commit secrets.

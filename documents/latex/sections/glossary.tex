@@ -1,0 +1,26 @@
+\section{Glossary}
+\label{sec:glossary}
+
+\begin{table}[H]
+\centering
+\caption{Project glossary -- terms as used in this repository}
+\label{tab:glossary}
+\begin{tabular}{@{}L{3.6cm}L{10.6cm}@{}}
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
+\midrule
+Edvanta & Product UI brand (title in \pathref{frontend/index.html}, footer in \pathref{frontend/src/components/Footer.jsx}) \\
+Learner / Instructor / Admin & The three \code{users.role} values enforced by Spring Security and route guards \\
+Course / Lesson & A course (\pathref{database/schema.sql} \code{courses}) owns ordered lessons (\code{lessons}, \code{order_index}) \\
+Enrollment & Link between a learner and a course (\code{enrollments}, unique per user+course) \\
+Progress & Per-lesson completion state aggregated to course percentage \\
+Quiz / Question / Attempt / Result & Assessment chain: quiz owns questions; a submission creates an attempt scored server-side into a result \\
+Discussion / Feedback & Course-scoped threads/replies and learner ratings \\
+Certificate & Completion credential issued after server-side eligibility verification \\
+DTO & Data-transfer object in \pathref{backend/src/main/java/com/example/lms/dto/} defining the API contract \\
+JWT & Stateless signed token (JJWT 0.12.6) authorising API calls \\
+springdoc & OpenAPI/Swagger generator serving \code{/v3/api-docs} and Swagger UI \\
+Vite & Frontend build/dev server (port 3000, proxies \code{/api}) \\
+\bottomrule
+\end{tabular}
+\end{table}

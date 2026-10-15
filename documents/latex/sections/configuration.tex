@@ -1,0 +1,17 @@
+\section{Configuration}
+\label{sec:configuration}
+
+\subsection{Backend configuration}
+\status{IMPLEMENTED}
+
+Centralised Spring configuration (\code{application.yml} or equivalent) with sensitive values loaded from environment: \code{DB_URL}, \code{DB_USERNAME}, \code{DB_PASSWORD}, \code{JWT_SECRET}, \code{JWT_EXPIRATION}, \code{PORT} -- all documented in \pathref{.env.example}. Never commit real credentials; production must inject them through the environment or a secret manager.
+
+\subsection{Frontend configuration}
+\status{IMPLEMENTED}
+
+The backend base URL is configured once as \code{VITE_API_BASE_URL} and referenced by every module in \pathref{frontend/src/api/} through the shared client. No component may hardcode \code{http://localhost:8080/api/...} (CONTRACT.md section 21).
+
+\subsection{Database bootstrap}
+\status{IMPLEMENTED}
+
+\pathref{database/schema.sql} (13 tables), \pathref{database/seed.sql}, and \pathref{database/dummy.sql} define the hand-written schema; the runtime uses Hibernate \code{ddl-auto: update}. The drift risk between the two is recorded in Section~\ref{sec:technical-debt}.
