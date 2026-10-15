@@ -1,0 +1,17 @@
+\section{Design System}
+\label{sec:design-system}
+
+\subsection{Tokens}
+\status{IMPLEMENTED}
+
+The Ant Design theme in \pathref{frontend/src/App.jsx} sets \code{colorPrimary: \#000000}, 4px radius and 40px control height with component overrides; Tailwind tokens live in \pathref{frontend/tailwind.config.js}. Brand accents observed in code: gradient \code{linear-gradient(90deg, \#fc4c02, \#ef2cc1, \#bdbbff)} (\pathref{frontend/src/components/ui/GradientRibbon.jsx}), mint \code{\#c8f6f9}, dark canvas \code{\#010120}. Product brand is Edvanta (\pathref{frontend/index.html}, \pathref{frontend/src/components/Footer.jsx}).
+
+\subsection{Component library}
+\status{IMPLEMENTED}
+
+Ant Design 5.22.2 provides tables, modals, forms, tabs and message toasts; project primitives in \pathref{frontend/src/components/ui/} (including \code{GradientRibbon.jsx}) and \pathref{frontend/src/components/common/} wrap them. Icons come from \code{@ant-design/icons} 5.5.2.
+
+\subsection{Usage rule}
+\status{RECOMMENDED}
+
+New screens should reuse the App-level theme and Tailwind tokens rather than hardcoding colours or spacing, keeping the black-first Edvanta identity consistent.

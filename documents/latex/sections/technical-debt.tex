@@ -1,0 +1,24 @@
+\section{Technical Debt}
+\label{sec:technical-debt}
+
+\subsection{Debt register}
+\status{INFERRED (each item traces to repository evidence)}
+
+\begin{table}[H]
+\centering
+\caption{Technical debt register}
+\label{tab:tech-debt}
+\begin{tabular}{@{}L{2.2cm}L{5.6cm}L{6.4cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Debt} & \textbf{Consequence / remedy} \\
+\midrule
+TD-01 & No versioned migrations; \code{ddl-auto: update} & Schema history untracked; adopt Flyway/Liquibase \\
+TD-02 & No CI/CD pipeline & Regressions undetected; add build/test gates \\
+TD-03 & Seed data unguarded by profile & Demo accounts in prod risk; add profile guard \\
+TD-04 & JWT without revocation/rotation & Cannot revoke sessions; add refresh + blocklist \\
+TD-05 & Unbounded list endpoints | N+1 risk & Catalogue scale risk; add pagination, fetch plans \\
+TD-06 & Frontend/backend contract only in prose & Drift risk; add OpenAPI diff check in CI \\
+TD-07 & README roadmap drifted from code | missing LICENSE | no compose file & Onboarding friction; reconcile docs, add licence \\
+\bottomrule
+\end{tabular}
+\end{table}

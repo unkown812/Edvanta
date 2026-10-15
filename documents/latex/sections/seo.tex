@@ -1,0 +1,12 @@
+\section{SEO}
+\label{sec:seo}
+
+\subsection{Current state}
+\status{PARTIAL}
+
+The SPA shell (\pathref{frontend/index.html}, Vite build into \pathref{frontend/dist/}) carries literal Edvanta metadata supporting ``LMS'', ``structured courses'', ``assessments'' and ``certificates''. Client-side rendering means crawlers see a thin shell; no sitemap, robots policy, canonical URLs, structured data, or prerendering is evidenced.
+
+\subsection{Recommendations}
+\status{RECOMMENDED}
+
+Add unique titles/descriptions per public route (\code{/}, \code{/courses}, \code{/courses/:id}), semantic HTML, canonical links, a sitemap, and server-side rendering or prerendering for the catalogue if organic acquisition matters. Do not claim search visibility that has not been measured.

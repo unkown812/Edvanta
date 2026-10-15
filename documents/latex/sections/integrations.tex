@@ -1,0 +1,17 @@
+\section{Integrations}
+\label{sec:integrations}
+
+\subsection{Embedded practice editor}
+\status{IMPLEMENTED}
+
+Course-attached coding practice embeds OneCompiler (\pathref{frontend/src/pages/practice/PracticePage.jsx}, \pathref{frontend/src/pages/practice/CoursePracticePage.jsx}, data in \pathref{frontend/src/data/}) via iframe with \code{postMessage} starter-code injection~\cite{onecompiler}. It is an isolated frontend dataset with no backend dependency by explicit design.
+
+\subsection{External origins}
+\status{IMPLEMENTED}
+
+YouTube (lesson video references), Google Fonts, and Unsplash imagery are loaded as third-party origins outside the trust boundary and receive no user secrets.
+
+\subsection{Not integrated}
+\status{NOT APPLICABLE}
+
+No payment gateway, email provider, SSO, analytics, or object storage is wired in v1.0 (explicitly excluded by CONTRACT.md section 5.2).

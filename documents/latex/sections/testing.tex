@@ -1,0 +1,17 @@
+\section{Testing}
+\label{sec:testing}
+
+\subsection{Backend tests}
+\status{IMPLEMENTED}
+
+22 test methods across 10 classes under \pathref{backend/src/test/}, including the end-to-end \pathref{backend/src/test/java/com/example/lms/integration/LmsIntegrationTest.java} (register, course, lessons, quiz, enroll, progress, certificate, discussion, feedback) with H2 as the test database. Run with \code{./mvnw test} from \pathref{backend/}.
+
+\subsection{Frontend tests}
+\status{IMPLEMENTED}
+
+39 test methods across 8 files under \pathref{frontend/src/test/} using Vitest 2.1.8 with Testing Library and jsdom. Run with \code{npm test} (i.e.\ \code{vitest run}) from \pathref{frontend/}.
+
+\subsection{Coverage contract}
+\status{IMPLEMENTED (per CONTRACT.md sections 18--19)}
+
+Backend must cover registration, login, invalid login, JWT validation, role authorization, course CRUD, enrollment including duplicates, progress, quiz submission and scoring, discussions, feedback, certificates, and invalid/unauthorized/forbidden/validation cases. Frontend must cover auth forms, route protection, catalogue, details, enrollment, lesson navigation, progress display, quiz interaction, results, discussions, feedback, certificates, dashboards, and loading/empty/error/responsive states. Five integration scenarios (register/login, enrollment, progress, assessment, certificate) must pass end to end.

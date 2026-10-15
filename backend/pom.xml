@@ -11,7 +11,7 @@
         <relativePath />
     </parent>
 
-    <groupId>com.example</groupId>
+    <groupId>com.unkown812</groupId>
     <artifactId>lms-backend</artifactId>
     <version>1.0.0</version>
     <name>lms-backend</name>

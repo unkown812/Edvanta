@@ -1,0 +1,17 @@
+\section{UI/UX}
+\label{sec:ui-ux}
+
+\subsection{Page inventory}
+\status{IMPLEMENTED}
+
+Public: \code{/} (\pathref{frontend/src/pages/HomePage.jsx}), \code{/login}, \code{/register}, \code{/courses} (\pathref{frontend/src/pages/CourseCatalogPage.jsx}), \code{/courses/:id} (\pathref{frontend/src/pages/CourseDetailPage.jsx}), \code{/practice} and \code{/courses/:courseId/practice}. Authenticated: \code{/courses/:courseId/learn} (\pathref{frontend/src/pages/LearningPage.jsx}), \code{/quizzes/:id} (\pathref{frontend/src/pages/QuizTakingPage.jsx}), role dashboards (\pathref{frontend/src/components/LearnerDashboard.jsx}, \pathref{frontend/src/components/InstructorDashboard.jsx}, \pathref{frontend/src/components/AdminDashboard.jsx}), \code{/profile}, plus \code{*} fallback (\pathref{frontend/src/pages/NotFoundPage.jsx}).
+
+\subsection{State contract}
+\status{IMPLEMENTED}
+
+Per CONTRACT.md section 16 every major page provides loading, success, empty, error and retry states; the frontend must never silently render empty data on API failure. Shared chrome lives in \pathref{frontend/src/components/Navbar.jsx} and \pathref{frontend/src/components/Footer.jsx}; reusable primitives live in \pathref{frontend/src/components/ui/} and \pathref{frontend/src/components/common/}.
+
+\subsection{Responsive and accessible behaviour}
+\status{IMPLEMENTED (with gaps)}
+
+Tailwind utilities plus Ant Design components adapt desktop/tablet/mobile; cards must not overflow and forms must remain usable per the contract. \status{RECOMMENDED:} a systematic accessibility pass (focus order, labels, contrast audit against WCAG 2.1) is not evidenced in the repository.

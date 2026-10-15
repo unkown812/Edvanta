@@ -1,0 +1,38 @@
+\section{API Documentation}
+\label{sec:api-documentation}
+
+\subsection{Base conventions}
+\status{IMPLEMENTED}
+
+All REST endpoints are versioned under \code{/api/v1}. JSON request/response bodies use DTOs in \pathref{backend/src/main/java/com/example/lms/dto/}. Success envelopes use \pathref{backend/src/main/java/com/example/lms/dto/response/ApiResponse.java}; errors use \pathref{backend/src/main/java/com/example/lms/dto/response/ErrorResponse.java}. Interactive docs are served by springdoc-openapi 2.6.0 (\pathref{backend/src/main/java/com/example/lms/config/OpenApiConfig.java}): OpenAPI JSON at \code{/v3/api-docs} and Swagger UI at \code{/swagger-ui.html} or \code{/swagger-ui/index.html}.
+
+\subsection{Endpoint inventory (47 mapped endpoints, 11 controllers)}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Controller to endpoint-group mapping (verified in controller sources)}
+\label{tab:api-inventory}
+\begin{tabular}{@{}L{3.8cm}L{9.4cm}@{}}
+\toprule
+\textbf{Controller} & \textbf{Endpoints} \\
+\midrule
+\pathref{controller/AuthController.java} & \code{POST /api/v1/auth/register}, \code{POST /api/v1/auth/login}, \code{POST /api/v1/auth/logout} \\
+\pathref{controller/UserController.java} & \code{GET /api/v1/users}, \code{GET /api/v1/users/\{id\}}, \code{PUT /api/v1/users/\{id\}} \\
+\pathref{controller/CourseController.java} & \code{GET /api/v1/courses}, \code{GET /api/v1/courses/\{id\}}, \code{POST /api/v1/courses}, \code{PUT /api/v1/courses/\{id\}}, \code{DELETE /api/v1/courses/\{id\}} \\
+\pathref{controller/EnrollmentController.java} & \code{POST /api/v1/courses/\{courseId\}/enroll}, \code{DELETE /api/v1/courses/\{courseId\}/enroll}, \code{GET /api/v1/users/\{userId\}/enrollments} \\
+\pathref{controller/LessonController.java} & \code{GET /api/v1/courses/\{courseId\}/lessons}, \code{GET /api/v1/lessons/\{lessonId\}}, \code{POST /api/v1/courses/\{courseId\}/lessons}, \code{PUT /api/v1/lessons/\{lessonId\}}, \code{DELETE /api/v1/lessons/\{lessonId\}} \\
+\pathref{controller/ProgressController.java} & \code{GET /api/v1/courses/\{courseId\}/progress}, \code{POST /api/v1/lessons/\{lessonId\}/progress}, \code{PATCH /api/v1/lessons/\{lessonId\}/progress} \\
+\pathref{controller/QuizController.java} & Quiz CRUD plus \code{POST /api/v1/quizzes/\{quizId\}/attempts}, \code{GET /api/v1/quizzes/\{quizId\}/results} \\
+\pathref{controller/DiscussionController.java} & \code{GET/POST /api/v1/courses/\{courseId\}/discussions}, replies, delete \\
+\pathref{controller/FeedbackController.java} & \code{GET/POST /api/v1/courses/\{courseId\}/feedback}, \code{PUT /api/v1/feedback/\{feedbackId\}} \\
+\pathref{controller/CertificateController.java} & \code{GET/POST /api/v1/courses/\{courseId\}/certificate} \\
+\pathref{controller/CategoryController.java} & Category CRUD under \code{/api/v1/categories} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Error model}
+\status{IMPLEMENTED}
+
+Canonical codes: \code{VALIDATION_ERROR} (400), \code{UNAUTHORIZED} (401), \code{FORBIDDEN} (403), \code{RESOURCE_NOT_FOUND} (404), \code{RESOURCE_CONFLICT} (409, e.g.\ duplicate enrollment), \code{INVALID_OPERATION} (422), \code{INTERNAL_SERVER_ERROR} (500). Stack traces and credentials are never returned. The frontend normalises these in \pathref{frontend/src/api/client.js}.

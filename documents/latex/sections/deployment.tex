@@ -1,0 +1,17 @@
+\section{Deployment}
+\label{sec:deployment}
+
+\subsection{Verified development topology}
+\status{IMPLEMENTED}
+
+MySQL 8 on \code{localhost:3306} (schema from \pathref{database/schema.sql}) plus \code{./mvnw spring-boot:run} on :8080 plus Vite on :3000 with an \code{/api} proxy (\pathref{frontend/vite.config.js}). Backend base URL is configured once via \code{VITE_API_BASE_URL} (\pathref{.env.example}) and consumed through \pathref{frontend/src/api/client.js}.
+
+\subsection{Containerisation}
+\status{PARTIAL}
+
+\pathref{backend/Dockerfile} is a multi-stage build (Maven on JDK 21 alpine, runtime on JRE 21 alpine, \code{EXPOSE 8080}). There is no frontend Dockerfile and no \pathref{docker-compose.yml}; production topology, TLS termination, backups, log shipping and health-check wiring are undefined.
+
+\subsection{Production checklist}
+\status{RECOMMENDED}
+
+HTTPS, rotated secrets, managed MySQL with backups, versioned migrations, CORS allow-list, production JWT secret, structured logging, monitoring, and a defined rollback procedure. See also Sections~\ref{sec:cicd} and \ref{sec:configuration}.

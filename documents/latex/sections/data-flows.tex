@@ -1,0 +1,27 @@
+\section{Data Flows}
+\label{sec:data-flows}
+
+\subsection{Request lifecycle}
+\status{IMPLEMENTED}
+
+All interactions are synchronous JSON over HTTP: React component $\rightarrow$ feature API module in \pathref{frontend/src/api/} $\rightarrow$ shared Axios client (\pathref{frontend/src/api/client.js}, base URL from \code{VITE_API_BASE_URL}) $\rightarrow$ Spring Security filter chain $\rightarrow$ controller $\rightarrow$ service (transactional business rules) $\rightarrow$ JPA repository $\rightarrow$ MySQL. Responses return through DTOs; the Axios client unwraps envelopes and maps error codes for display.
+
+\subsection{Key data chains}
+
+\begin{itemize}
+\item \textbf{Progress:} lesson completion event $\rightarrow$ \code{POST/PATCH /api/v1/lessons/\{lessonId\}/progress} $\rightarrow$ \pathref{backend/src/main/java/com/example/lms/service/ProgressService.java} $\rightarrow$ \code{progress} table $\rightarrow$ aggregated \pathref{backend/src/main/java/com/example/lms/dto/response/CourseProgressResponse.java}.
+\item \textbf{Assessment:} answers $\rightarrow$ \code{POST /api/v1/quizzes/\{quizId\}/attempts} $\rightarrow$ \pathref{backend/src/main/java/com/example/lms/service/QuizService.java} scores server-side $\rightarrow$ attempt/result rows. The frontend is never authoritative for scores.
+\item \textbf{Certificate:} completion signal $\rightarrow$ \pathref{backend/src/main/java/com/example/lms/service/CertificateService.java} verifies enrollment, progress and quiz outcome $\rightarrow$ \code{certificates} row $\rightarrow$ download.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{diagrams/backend-layers.png}
+\caption{Backend layering that every data flow traverses -- controller, service, repository}
+\label{fig:data-layers}
+\end{figure}
+
+\subsection{What does not exist}
+\status{IMPLEMENTED (absence verified)}
+
+No event bus, message queue, cache layer, search index, object store, or background worker. No optimistic offline sync: the backend database is the single source of truth.

@@ -1,0 +1,32 @@
+\section{Security}
+\label{sec:security}
+
+\subsection{Implemented controls}
+\status{IMPLEMENTED}
+
+BCrypt password hashing, stateless JWT authentication with expiry (\pathref{backend/src/main/java/com/example/lms/config/SecurityConfig.java}), Bean Validation on DTOs, server-side role enforcement, consistent error envelopes that never leak stack traces or credentials, and JPA parameter binding (no string-concatenated SQL). Secrets are externalised through \pathref{.env.example} (\code{DB_URL}, \code{DB_USERNAME}, \code{DB_PASSWORD}, \code{JWT_SECRET}, \code{JWT_EXPIRATION}).
+
+\subsection{Findings}
+\status{IMPLEMENTED (gaps recorded, not invented)}
+
+\begin{table}[H]
+\centering
+\caption{Security findings grounded in repository evidence}
+\label{tab:sec-findings}
+\begin{tabular}{@{}L{2.2cm}L{5.4cm}L{6.6cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Finding} & \textbf{Evidence} \\
+\midrule
+S-01 & JWT in \code{localStorage}; no revocation or rotation & \pathref{frontend/src/context/AuthContext.jsx}; no refresh/token-blocklist code \\
+S-02 & \code{DataInitializer} seeds demo users with hardcoded BCrypt passwords and no profile guard & \pathref{backend/src/main/java/com/example/lms/config/DataInitializer.java} \\
+S-03 & Example \code{JWT_SECRET} committed in \pathref{.env.example}; must be rotated in production & File contents; no vault integration \\
+S-04 & No rate limiting, lockout, password recovery, or email verification & Absence verified in controllers and config \\
+S-05 & \code{ddl-auto: update} in configuration; schema history untracked & Backend application config \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Production requirements}
+\status{RECOMMENDED}
+
+HTTPS, rotated secrets via a manager, CORS allow-list review, rate limiting on auth endpoints, security headers, audit logging, and removal or guarding of seed data before release. See OWASP Top Ten~\cite{owasp} and the JWT cheat sheet~\cite{owaspjwt}.

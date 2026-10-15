@@ -1,0 +1,17 @@
+\section{Performance}
+\label{sec:performance}
+
+\subsection{Observed characteristics}
+\status{INFERRED}
+
+The application is a synchronous monolith with no cache, CDN, pagination contract, or query hints evidenced in the repository. Every list view is a direct JPA query; every interaction is a full HTTP round trip. No load-test results, budgets, or APM wiring exist in the repository (\status{UNKNOWN} for all numeric targets).
+
+\subsection{Bottleneck risks}
+\status{INFERRED}
+
+Unbounded course/lesson/discussion listings, N+1-prone entity graphs, and server-side scoring loops are the most likely hotspots. The Vite production bundle (\code{npm run build} into \pathref{frontend/dist/}) is the only evidenced optimisation.
+
+\subsection{Recommendations}
+\status{RECOMMENDED}
+
+Add pagination to list endpoints, index-verify slow queries against MySQL 8~\cite{mysql}, introduce response caching only after measurement, set performance budgets (e.g.\ catalogue p95), and instrument before scaling claims are made.

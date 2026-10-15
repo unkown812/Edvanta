@@ -1,172 +1,168 @@
-# Learning Management System
+<h1 align="center">Learning Management System — Edvanta</h1>
 
-A modern full-stack **Learning Management System (LMS)** designed to provide a complete platform for online learning, course management, assessments, progress tracking, and administrative operations.
+<p align="center">
+A modern full-stack <strong>Learning Management System (LMS)</strong> for online learning, course management,
+assessments, progress tracking, and administration — with secure JWT authentication and
+role-based access for <strong>Learners, Instructors, and Administrators</strong>.
+</p>
+
+> **Complete documentation:** [`documents/output/FSJP_LMS-Complete-Documentation.pdf`](documents/output/FSJP_LMS-Complete-Documentation.pdf)
+> (96-page evidence-based suite: BRD, PRD, functional / non-functional / technical requirements,
+> system & software architecture, HLD, LLD, API, auth, security, testing, deployment, roadmap, glossary.)
+> Sources live in [`documents/latex/`](documents/latex/) with diagrams in [`documents/latex/diagrams/`](documents/latex/diagrams/).
+
+<p align="center">
+  <img src="https://img.shields.io/badge/frontend-React_18_%2B_Vite_6_%2B_AntD_5-blue" alt="Stack">
+  <img src="https://img.shields.io/badge/backend-Spring_Boot_3.3.4_%2B_Java_21-green" alt="Backend">
+  <img src="https://img.shields.io/badge/database-MySQL_8_%2B_H2_tests-orange" alt="Database">
+  <img src="https://img.shields.io/badge/auth-Spring_Security_%2B_JWT-red" alt="Auth">
+</p>
 
 ---
 
-## 📌 Overview
+<h2 align="center">Table of Contents</h2>
+- [Overview](#overview)
+- [Objectives](#objectives)
+- [User Roles](#user-roles)
+- [Core Features](#core-features)
+- [System Architecture](#system-architecture)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Authentication Flow](#authentication-flow)
+- [Authorization](#authorization)
+- [Database Design](#database-design)
+- [API Documentation](#api-documentation)
+- [Learning Lifecycle](#learning-lifecycle)
+- [Quiz & Assessment Flow](#quiz-assessment-flow)
+- [Certificates](#certificates)
+- [Testing](#testing)
+- [Docker](#docker)
+- [Deployment](#deployment)
+- [Development Guidelines](#development-guidelines)
+- [Security Considerations](#security-considerations)
+- [Roadmap](#roadmap)
+- [Known Issues & Technical Debt](#known-issues-technical-debt)
+- [Contributing](#contributing)
+- [License](#license)
+- [Project](#project)
+- [Documentation](#documentation)
 
-The Learning Management System is a web-based platform that connects learners, instructors, and administrators through a centralized learning environment.
+---
 
-The platform is designed to support the complete learning lifecycle:
+<h2 align="center">Overview</h2>
+
+The Learning Management System (**product brand: Edvanta** — see `frontend/index.html` and
+`frontend/src/components/Footer.jsx`) is a web-based platform connecting learners, instructors,
+and administrators through a centralized learning environment.
+
+The platform supports the complete learning lifecycle:
 
 ```text
 User Registration
-       ↓
+        ↓
 Course Discovery
-       ↓
+        ↓
 Course Enrollment
-       ↓
+        ↓
 Learning & Progress Tracking
-       ↓
+        ↓
 Assessments
-       ↓
+        ↓
 Performance Evaluation
-       ↓
+        ↓
 Course Completion
-       ↓
+        ↓
 Certificate
 ```
 
-The system provides role-based functionality so that each type of user has access to the features relevant to their responsibilities.
+<p align="center"><img src="documents/latex/diagrams/learning-lifecycle.png" alt="Learning lifecycle"></p>
+
+Each user type gets the features relevant to their responsibilities, enforced **server-side**
+by Spring Security — frontend route guards are UX-only (see `CONTRACT.md` §13).
 
 ---
 
-## 🎯 Objectives
-
-The main objectives of the project are:
+<h2 align="center">Objectives</h2>
 
 - Provide a centralized platform for online learning.
-- Allow users to discover and enroll in courses.
+- Let users discover and enroll in courses.
 - Provide structured course content and learning materials.
-- Track learner progress.
-- Conduct online assessments and quizzes.
+- Track learner progress (per-lesson → per-course aggregation).
+- Conduct online assessments and quizzes with **server-side scoring**.
 - Record and display learner performance.
 - Enable communication and discussion around courses.
-- Provide instructors with tools to manage learning content.
-- Provide administrators with centralized system management.
-- Generate certificates after successful course completion.
+- Give instructors tools to manage courses, lessons, quizzes, and question banks.
+- Give administrators centralized user / course / category / assessment management.
+- Generate certificates after verified course completion.
 - Maintain secure authentication and role-based access control.
 
 ---
 
-# 👥 User Roles
+<h2 align="center">User Roles</h2>
 
-The system is designed around three primary roles.
+The system has three primary roles, stored in `users.role` (`database/schema.sql`, default `LEARNER`)
+and enforced by `backend/.../config/SecurityConfig.java` plus route guards in
+`frontend/src/routes/AppRoutes.jsx` / `ProtectedRoute.jsx`.
 
-## 👨‍🎓 Learner
-
-Learners can:
+<h3 align="center">Learner</h3>
 
 - Register and log in.
-- Browse available courses.
-- Search and view course information.
-- Enroll in courses.
-- Access course lessons and learning materials.
-- Track their learning progress.
-- Complete assessments and quizzes.
-- View assessment results.
-- Participate in course discussions.
-- Submit course feedback.
-- View their learning history.
+- Browse, search, and view course information.
+- Enroll in courses (duplicate enrollment rejected with `409`).
+- Access lessons and learning materials (`/courses/:courseId/learn`).
+- Track learning progress (dashboard + progress bar).
+- Complete assessments and quizzes (`/quizzes/:id`).
+- View assessment results and learning history.
+- Participate in course discussions; submit course feedback.
 - Download course-completion certificates.
 
----
+<h3 align="center">Instructor</h3>
 
-## 👨‍🏫 Instructor
-
-Instructors can:
-
-- Create and manage courses.
-- Add and organize course lessons.
-- Upload or link learning resources.
-- Create quizzes and assessments.
-- Manage assessment questions.
-- Monitor learner progress.
-- Review learner performance.
+- Create, edit, publish, and delete own courses.
+- Add and organize lessons; upload/link learning resources.
+- Create quizzes and manage assessment questions.
+- Monitor learner progress and review performance in own courses.
 - Interact with learners through course discussions.
 
----
+<h3 align="center">Administrator</h3>
 
-## 👨‍💼 Administrator
-
-Administrators are responsible for platform-level management.
-
-They can:
-
-- Manage users.
-- Manage instructors.
-- Manage courses.
-- Manage categories.
+- Manage users, instructors, courses, categories.
 - Manage assessments and question banks.
-- Monitor platform activity.
-- Review learner performance.
-- Manage system-level configuration.
-- Control access through role-based permissions.
+- Monitor platform activity; review learner performance.
+- Manage system-level configuration; control access through role permissions.
+- Access `/admin`, `/admin/users`, `/admin/categories` dashboards.
 
 ---
 
-# 🚀 Core Features
+<h2 align="center">Core Features</h2>
 
-## 🔐 Authentication & Authorization
+<h3 align="center">Authentication &amp; Authorization</h3>
 
-- User registration
-- User login
-- Secure password handling
-- Logout
-- JWT-based authentication
-- Role-based authorization
-- Protected routes
-- Access control for administrative functionality
+- User registration / login / logout (`POST /api/v1/auth/*`).
+- BCrypt password hashing; stateless JWT (JJWT 0.12.6, 24h expiry).
+- Axios interceptor attaches `Authorization: Bearer <token>` (`frontend/src/api/client.js`).
+- Protected routes + role guards (`ProtectedRoute.jsx`); server is the authority.
 
----
+<h3 align="center">Course Management</h3>
 
-## 📚 Course Management
+- Course creation, editing, publishing, deletion, categorization.
+- Course descriptions, lessons (`order_index`, `duration_minutes`), learning resources.
+- Course enrollment / unenrollment with unique `(user_id, course_id)` constraint.
 
-The course management module allows the platform to organize educational content.
+<h3 align="center">Learning Module</h3>
 
-### Course capabilities
+- Lesson navigation and video/content player (`LessonPlayer.jsx`, `LearningPage.jsx`).
+- Lesson completion → persisted progress → dashboard reflection.
+- Built-in **coding practice**: course-attached problems with embedded OneCompiler editor
+  (`frontend/src/pages/practice/`, iframe + `postMessage` starter-code injection).
 
-- Course creation
-- Course editing
-- Course publishing
-- Course deletion
-- Course categorization
-- Course descriptions
-- Course lessons
-- Learning resources
-- Course enrollment
+<h3 align="center">Progress Tracking</h3>
 
----
-
-## 🎓 Learning Module
-
-Learners can access enrolled courses through a structured learning interface.
-
-The learning module provides:
-
-- Lesson navigation
-- Video-based learning
-- Learning resources
-- Lesson completion
-- Progress tracking
-- Course completion status
-
----
-
-## 📊 Progress Tracking
-
-The system records learner activity and progress.
-
-Progress information can include:
-
-- Course completion percentage
-- Completed lessons
-- Lesson watch time
-- Assessment completion
-- Overall learning status
-
-Example:
+- Course completion percentage, completed lessons, watch time, assessment completion.
+- Backend source of truth: `ProgressService` + `progress` table → `CourseProgressResponse`.
 
 ```text
 Course Progress
@@ -178,57 +174,31 @@ Assessment: Completed
 Status: In Progress
 ```
 
----
+<h3 align="center">Assessments &amp; Quizzes</h3>
 
-## 📝 Assessments & Quizzes
+- Multiple-choice questions, question banks, course-specific quizzes.
+- Quiz attempts with **server-side validation and scoring** (`QuizService`) —
+  the frontend is never authoritative for scores.
+- Score calculation, result storage, performance history.
 
-The assessment system allows courses to contain quizzes and evaluations.
+<h3 align="center">Discussions &amp; Feedback</h3>
 
-Features include:
+- Course discussions with replies (`DiscussionList.jsx`, `DiscussionItem.jsx`).
+- Course feedback and ratings (`FeedbackForm.jsx`).
 
-- Multiple-choice questions
-- Question banks
-- Course-specific assessments
-- Quiz attempts
-- Score calculation
-- Result storage
-- Performance history
+<h3 align="center">Certificates</h3>
 
-The system can be extended to support additional assessment types in future versions.
-
----
-
-## 💬 Discussions & Feedback
-
-Courses can provide communication features for learners and instructors.
-
-Users can:
-
-- Participate in course discussions.
-- Ask questions.
-- Reply to discussions.
-- Share learning-related information.
-- Submit course feedback.
+- Completion verification by `CertificateService` (enrollment + progress + quiz outcome).
+- Learner identification, course information, completion date, grade, download (`CertificateCard.jsx`).
 
 ---
 
-## 🏆 Certificates
+<h2 align="center">System Architecture</h2>
 
-After completing the required course requirements, eligible learners can receive a course-completion certificate.
+Classical **three-tier client–server** architecture. Every interaction is a synchronous
+HTTP request/response cycle — no message broker, cache, search engine, or background worker.
 
-The certificate module is designed to support:
-
-- Course completion verification
-- Learner identification
-- Course information
-- Completion date
-- Certificate generation
-
----
-
-# 🏗️ System Architecture
-
-The application follows a layered full-stack architecture.
+<p align="center"><img src="documents/latex/diagrams/system-architecture.png" alt="System architecture"></p>
 
 ```text
                    ┌───────────────────┐
@@ -256,224 +226,218 @@ The application follows a layered full-stack architecture.
                    └───────────────────┘
 ```
 
-### Frontend
+<h3 align="center">Frontend</h3>
 
-Responsible for:
+<p align="center"><img src="documents/latex/diagrams/frontend-architecture.png" alt="Frontend architecture"></p>
 
-- User interface
-- Routing
-- Form handling
-- Authentication state
-- API communication
-- Course player
-- Dashboards
-- Progress visualization
+Responsible for UI, routing (19 routes), form handling, auth state (`AuthContext.jsx`),
+API communication (`frontend/src/api/` — 13 modules), course player, dashboards,
+and progress visualization.
 
-### Backend
+<h3 align="center">Backend</h3>
 
-Responsible for:
+<p align="center"><img src="documents/latex/diagrams/backend-layers.png" alt="Backend layers"></p>
 
-- Business logic
-- Authentication
-- Authorization
-- REST APIs
-- Validation
-- Data processing
-- Database interaction
+Responsible for business logic, authentication, authorization, REST APIs (47 endpoints,
+11 controllers), validation, data processing, and database interaction.
+Layering: **Controller → Service → Repository → Database**
+(`backend/src/main/java/com/example/lms/`).
 
-### Database
+<h3 align="center">Database</h3>
 
-Responsible for:
-
-- User data
-- Course data
-- Enrollment records
-- Learning progress
-- Assessments
-- Questions
-- Results
-- Discussions
-- Feedback
-- Certificates
+Responsible for users, courses, enrollments, lessons, progress, quizzes, questions,
+attempts, results, discussions, feedback, and certificates — 13 tables in
+`database/schema.sql`.
 
 ---
 
-# 🛠️ Technology Stack
+<h2 align="center">Technology Stack</h2>
 
-> Replace these technologies if your implementation differs.
+Versions taken from `backend/pom.xml` and `frontend/package.json`.
 
 | Layer | Technology |
 |---|---|
-| Frontend | React |
-| Styling | Tailwind CSS |
-| UI Components | Ant Design |
-| Backend | Spring Boot |
-| Language | Java |
-| API | REST |
-| Authentication | Spring Security + JWT |
-| ORM | Spring Data JPA / Hibernate |
-| Database | MySQL |
-| Build Tool | Maven |
-| API Documentation | OpenAPI / Swagger |
-| Version Control | Git & GitHub |
+| Frontend | React 18.3.1 |
+| Build tool | Vite 6.0.1 (dev server on `:3000`, proxies `/api`) |
+| Routing | React Router 6.28.0 (`frontend/src/routes/AppRoutes.jsx`, 19 routes) |
+| HTTP client | Axios 1.7.9 (`frontend/src/api/client.js` — JWT header, envelope unwrap) |
+| Styling | Tailwind CSS 3.4.16 |
+| UI Components | Ant Design 5.22.2 + `@ant-design/icons` 5.5.2 |
+| Backend | Spring Boot 3.3.4 |
+| Language | Java 21 (`<java.version>`, `backend/Dockerfile`) |
+| API | REST, versioned under `/api/v1` |
+| Authentication | Spring Security + JWT (JJWT 0.12.6, BCrypt) |
+| ORM | Spring Data JPA / Hibernate (13 repositories, `ddl-auto: update`) |
+| Database | MySQL 8 (runtime), H2 (tests) — `database/schema.sql` |
+| Build Tool | Maven (`backend/pom.xml`, `mvnw` / `mvnw.cmd`) |
+| API Documentation | springdoc-openapi 2.6.0 → `/v3/api-docs`, `/swagger-ui.html` |
+| Testing | Spring Test + Vitest 2.1.8 (Testing Library, jsdom) |
+| Containerisation | Docker (backend `backend/Dockerfile`, multi-stage JDK/JRE 21) |
+| Version Control | Git & GitHub (branches `main`, `frontend/*`, `backend/*` per `CONTRACT.md`) |
 
 ---
 
-# 📂 Project Structure
+<h2 align="center">Project Structure</h2>
+
+Verified against the repository (Spring layering per `CONTRACT.md` §7, React layout per §8):
 
 ```text
-Learning-Management-System/
+FSJP_LMS/
 │
 ├── backend/
 │   ├── src/
 │   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com/example/lms/
-│   │   │   │       ├── config/
-│   │   │   │       ├── controller/
-│   │   │   │       ├── dto/
-│   │   │   │       ├── entity/
-│   │   │   │       ├── repository/
-│   │   │   │       ├── security/
-│   │   │   │       └── service/
-│   │   │   │
-│   │   │   └── resources/
-│   │   │       └── application.yml
-│   │   │
-│   │   └── test/
-│   │
+│   │   │   ├── java/com/example/lms/
+│   │   │   │   ├── config/        # SecurityConfig, OpenApiConfig, DataInitializer
+│   │   │   │   ├── controller/    # 11 controllers (Auth, User, Course, Enrollment,
+│   │   │   │   │                 # Lesson, Progress, Quiz, Discussion, Feedback,
+│   │   │   │   │                 # Certificate, Category)
+│   │   │   │   ├── dto/           # request/* + response/* (API contract)
+│   │   │   │   ├── entity/        # 13 JPA entities (User, Course, Lesson, Quiz, …)
+│   │   │   │   ├── exception/     # error handling
+│   │   │   │   ├── repository/    # 13 Spring Data repositories
+│   │   │   │   ├── security/      # JWT filter / principal
+│   │   │   │   ├── service/       # 11 services (business rules, transactions)
+│   │   │   │   └── LmsApplication.java
+│   │   │   └── resources/         # application.yml
+│   │   └── test/                  # 10 classes, 22 tests incl. LmsIntegrationTest
 │   ├── pom.xml
+│   ├── mvnw / mvnw.cmd
 │   └── Dockerfile
 │
 ├── frontend/
 │   ├── public/
 │   ├── src/
-│   │   ├── api/
-│   │   ├── components/
-│   │   ├── pages/
+│   │   ├── api/           # 13 modules: auth, user, course, enrollment, lesson,
+│   │   │                 # progress, quiz, discussion, feedback, certificate,
+│   │   │                 # category + client.js + index.js
+│   │   ├── assets/
+│   │   ├── components/    # AppShell, Navbar, Sidebar, CourseCard/List/Details,
+│   │   │                 # EnrollmentButton, LessonPlayer, ProgressBar, QuizCard,
+│   │   │                 # QuizPage/Result, Discussion*, FeedbackForm,
+│   │   │                 # CertificateCard, Learner/Instructor/Admin dashboards,
+│   │   │                 # + common/, ui/, practice/
+│   │   ├── context/       # AuthContext.jsx (localStorage session)
+│   │   ├── data/          # static practice dataset (isolated, by design)
 │   │   ├── hooks/
-│   │   ├── context/
-│   │   └── App.jsx
-│   │
+│   │   ├── pages/         # Home, Login, Register, CourseCatalog, CourseDetail,
+│   │   │                 # Learning, QuizTaking, Profile, NotFound + practice/
+│   │   ├── routes/        # AppRoutes.jsx (19 routes), ProtectedRoute.jsx
+│   │   ├── test/          # 8 files, 39 tests (Vitest)
+│   │   ├── utils/         # constants (ROLES), helpers
+│   │   ├── App.jsx        # antd theme (black primary, 4px radius, 40px controls)
+│   │   └── main.jsx
+│   ├── index.html         # "Edvanta -- Learn Your Way"
 │   ├── package.json
-│   └── ...
+│   ├── vite.config.js     # :3000 + /api proxy
+│   └── tailwind.config.js # design tokens
 │
 ├── database/
-│   └── schema.sql
+│   ├── schema.sql         # 13 tables (users → certificates)
+│   ├── seed.sql
+│   └── dummy.sql
 │
-├── DOCUMENTATION/
+├── documents/
+│   ├── latex/             # full documentation sources (39 sections)
+│   │   ├── diagrams/      # 9 .mmd sources + 9 .png renders
+│   │   └── sections/
+│   └── output/
+│       └── FSJP_LMS-Complete-Documentation.pdf  # generated complete document
 │
+├── CONTRACT.md            # two-workstream engineering contract (Jay/Ali)
 ├── README.md
+├── .env.example
 └── .gitignore
 ```
 
 ---
 
-# ⚙️ Prerequisites
+<h2 align="center">Prerequisites</h2>
 
-Before running the project, install:
-
-- Java 17+
-- Node.js
-- npm
+- Java 21
+- Node.js 18+ and npm
 - MySQL 8+
 - Git
-
-Optional:
-
-- Docker
-- Docker Compose
+- Optional: Docker
 
 ---
 
-# 🚀 Installation
+<h2 align="center">Installation</h2>
 
-## 1. Clone the repository
+<h3 align="center">1. Clone the repository</h3>
 
 ```bash
 git clone <repository-url>
-cd Learning-Management-System
+cd FSJP_LMS
 ```
 
----
-
-## 2. Configure the Database
-
-Create the MySQL database:
+<h3 align="center">2. Configure the Database</h3>
 
 ```sql
 CREATE DATABASE lms;
 ```
 
-Import the database schema:
-
 ```bash
 mysql -u root -p lms < database/schema.sql
+# optional sample data:
+mysql -u root -p lms < database/seed.sql
 ```
 
----
+<h3 align="center">3. Configure Backend</h3>
 
-## 3. Configure Backend
-
-Update the backend configuration:
+Copy and edit environment from `.env.example`:
 
 ```text
-backend/src/main/resources/application.yml
+PORT=8080
+DB_URL=jdbc:mysql://localhost:3306/lms?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+DB_USERNAME=root
+DB_PASSWORD=root
+JWT_SECRET=<generate-a-strong-secret>
+JWT_EXPIRATION=86400000
 ```
 
-Example configuration:
+> Never commit real secrets. Production must inject them via environment / secret manager
+> and rotate the example `JWT_SECRET`.
 
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/lms
-    username: root
-    password: your_password
-
-app:
-  jwt-secret: your-secret-key
-```
-
-For production, secrets should be provided through environment variables rather than committed configuration files.
-
----
-
-## 4. Start the Backend
+<h3 align="center">4. Start the Backend</h3>
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
 ```
 
-The backend will normally be available at:
+Backend at `http://localhost:8080`. Swagger UI at
+`http://localhost:8080/swagger-ui/index.html`, OpenAPI JSON at `/v3/api-docs`.
 
-```text
-http://localhost:8080
-```
-
----
-
-## 5. Start the Frontend
-
-Open another terminal:
+<h3 align="center">5. Start the Frontend</h3>
 
 ```bash
 cd frontend
 npm install
-npm start
+npm start                     # vite on http://localhost:3000
 ```
 
-The frontend will normally be available at:
-
-```text
-http://localhost:3000
-```
+Set `VITE_API_BASE_URL=http://localhost:8080` (see `.env.example`).
 
 ---
 
-# 🔑 Authentication Flow
+<h2 align="center">Configuration</h2>
 
-The authentication flow is based on JWT.
+| Variable | Owner | Purpose |
+|---|---|---|
+| `PORT` | Backend | API listen port (`8080`) |
+| `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` | Backend | MySQL datasource |
+| `JWT_SECRET` / `JWT_EXPIRATION` | Backend | Token signing key + TTL (ms) |
+| `VITE_API_BASE_URL` | Frontend | Single base URL used by all `src/api/*` modules |
+
+---
+
+<h2 align="center">Authentication Flow</h2>
+
+Stateless JWT: register/login → signed token → `localStorage` → `Authorization: Bearer`
+header per request → Spring Security validation → role enforcement.
+
+<p align="center"><img src="documents/latex/diagrams/authentication-flow.png" alt="Authentication flow"></p>
 
 ```text
 User
@@ -503,33 +467,39 @@ Role Authorization
 Protected Resource
 ```
 
+Logout is client-side token removal plus `POST /api/v1/auth/logout`.
+No refresh rotation, revocation list, password recovery, or email verification in v1.0.
+
 ---
 
-# 🔒 Authorization
+<h2 align="center">Authorization</h2>
 
-The system uses role-based access control.
+Server-enforced; frontend guards mirror it for UX only.
 
 | Feature | Learner | Instructor | Admin |
 |---|:---:|:---:|:---:|
-| Browse courses | ✓ | ✓ | ✓ |
+| Browse / view courses | ✓ | ✓ | ✓ |
 | Enroll in courses | ✓ | — | ✓ |
-| Access lessons | ✓ | ✓ | ✓ |
-| Track progress | ✓ | ✓ | ✓ |
-| Take assessments | ✓ | — | ✓ |
-| Create courses | — | ✓ | ✓ |
-| Manage lessons | — | ✓ | ✓ |
-| Manage questions | — | ✓ | ✓ |
-| Manage users | — | — | ✓ |
-| Manage instructors | — | — | ✓ |
-| View system analytics | — | Limited | ✓ |
+| Access lessons / track own progress | ✓ | ✓ (own) | ✓ |
+| Take quiz / view own results | ✓ | — | ✓ |
+| Create / edit / delete own course | — | ✓ | ✓ |
+| Manage lessons / questions / quizzes | — | ✓ | ✓ |
+| View learner performance | — | ✓ (own) | ✓ |
+| Participate in discussions | ✓ | ✓ | ✓ |
+| Submit feedback | ✓ | — | — |
+| Manage users / instructors / all courses | — | — | ✓ |
+| Access admin dashboard | — | — | ✓ |
 
 ---
 
-# 🗄️ Database Design
+<h2 align="center">Database Design</h2>
 
-The database is designed around the major LMS entities.
+13 tables with foreign keys, unique constraints, and indexes (`database/schema.sql`):
+`users`, `categories`, `courses`, `lessons`, `enrollments` (unique `user_id+course_id`),
+`progress`, `quizzes`, `questions`, `quiz_attempts`, `quiz_attempt_answers`,
+`discussions`, `feedback`, `certificates`.
 
-A simplified relationship model is:
+<p align="center"><img src="documents/latex/diagrams/database-er.png" alt="Database ER"></p>
 
 ```text
 User
@@ -551,82 +521,99 @@ Course          Result
  └── Feedback
 ```
 
-The exact schema should be maintained in:
-
-```text
-database/schema.sql
-```
+> Note: runtime schema is managed by Hibernate `ddl-auto: update`; hand-written
+> `schema.sql` can drift — versioned migrations (Flyway/Liquibase) are recommended
+> before multi-instance deployment.
 
 ---
 
-# 🧪 Testing
+<h2 align="center">API Documentation</h2>
 
-The project should maintain tests for both backend and frontend components.
+Base path `/api/v1`, JSON, envelope `ApiResponse` / `ErrorResponse`
+(`backend/.../dto/response/`). Interactive docs when backend runs:
+`http://localhost:8080/swagger-ui/index.html`.
 
-### Backend
+| Group | Endpoints |
+|---|---|
+| Auth | `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `POST /api/v1/auth/logout` |
+| Users | `GET /api/v1/users`, `GET /api/v1/users/{id}`, `PUT /api/v1/users/{id}` |
+| Courses | `GET /api/v1/courses`, `GET /api/v1/courses/{id}`, `POST /api/v1/courses`, `PUT /api/v1/courses/{id}`, `DELETE /api/v1/courses/{id}` |
+| Enrollment | `POST /api/v1/courses/{courseId}/enroll`, `DELETE /api/v1/courses/{courseId}/enroll`, `GET /api/v1/users/{userId}/enrollments` |
+| Lessons | `GET /api/v1/courses/{courseId}/lessons`, `GET /api/v1/lessons/{lessonId}`, `POST /api/v1/courses/{courseId}/lessons`, `PUT /api/v1/lessons/{lessonId}`, `DELETE /api/v1/lessons/{lessonId}` |
+| Progress | `GET /api/v1/courses/{courseId}/progress`, `POST /api/v1/lessons/{lessonId}/progress`, `PATCH /api/v1/lessons/{lessonId}/progress` |
+| Quizzes | `GET /api/v1/courses/{courseId}/quizzes`, `GET /api/v1/quizzes/{quizId}`, `POST /api/v1/quizzes/{quizId}/attempts`, `GET /api/v1/quizzes/{quizId}/results` + instructor CRUD |
+| Discussions | `GET/POST /api/v1/courses/{courseId}/discussions`, replies, delete |
+| Feedback | `GET/POST /api/v1/courses/{courseId}/feedback`, `PUT /api/v1/feedback/{feedbackId}` |
+| Certificates | `GET/POST /api/v1/courses/{courseId}/certificate` |
+| Categories | CRUD under `/api/v1/categories` |
+
+Error codes: `VALIDATION_ERROR` 400, `UNAUTHORIZED` 401, `FORBIDDEN` 403,
+`RESOURCE_NOT_FOUND` 404, `RESOURCE_CONFLICT` 409, `INVALID_OPERATION` 422,
+`INTERNAL_SERVER_ERROR` 500.
+
+---
+
+<h2 align="center">Learning Lifecycle</h2>
+
+Register → login → browse (`/courses`) → detail (`/courses/:id`) → enroll →
+learn (`/courses/:courseId/learn`) → progress persisted → quiz → certificate.
+Covered end-to-end by `LmsIntegrationTest`. Practice pages (`/practice`,
+`/courses/:courseId/practice`) use the isolated static dataset in `frontend/src/data/`.
+
+<h2 align="center">Quiz &amp; Assessment Flow</h2>
+
+<p align="center"><img src="documents/latex/diagrams/quiz-submission-sequence.png" alt="Quiz submission sequence"></p>
+
+```text
+Open Quiz
+  ↓
+Answer Questions
+  ↓
+Submit
+  ↓
+Backend Validates
+  ↓
+Score Calculated
+  ↓
+Result Stored
+  ↓
+Frontend Displays Result
+```
+
+<h2 align="center">Certificates</h2>
+
+<p align="center"><img src="documents/latex/diagrams/certificate-eligibility.png" alt="Certificate eligibility"></p>
+
+Eligibility is verified server-side by `CertificateService`
+(enrollment + progress + quiz outcome) before `GET/POST /api/v1/courses/{courseId}/certificate`
+issues the row rendered by `CertificateCard.jsx`.
+
+---
+
+<h2 align="center">Testing</h2>
 
 ```bash
 cd backend
-./mvnw test
-```
+./mvnw test          # 22 tests / 10 classes (H2), incl. LmsIntegrationTest end-to-end
 
-### Frontend
-
-```bash
 cd frontend
-npm test
+npm test              # vitest run — 39 tests / 8 files (Testing Library + jsdom)
 ```
 
-Recommended testing layers:
-
-```text
-Unit Tests
-    ↓
-Integration Tests
-    ↓
-API Tests
-    ↓
-Frontend Component Tests
-    ↓
-End-to-End Tests
-```
+Layers: unit → integration → API → frontend component → end-to-end
+(register/login, enrollment, progress, assessment, certificate).
 
 ---
 
-# 📖 API Documentation
+<h2 align="center">Docker</h2>
 
-When the backend is running, API documentation can be exposed through Swagger/OpenAPI:
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-The API should document:
-
-- Authentication endpoints
-- User endpoints
-- Course endpoints
-- Enrollment endpoints
-- Lesson/progress endpoints
-- Assessment endpoints
-- Question endpoints
-- Discussion endpoints
-- Feedback endpoints
-- Certificate endpoints
-- Administrative endpoints
-
----
-
-# 🐳 Docker
-
-The project can be containerized to simplify deployment.
-
-Example architecture:
+Backend multi-stage image (`backend/Dockerfile`: Maven + JDK 21 build → JRE 21 runtime,
+`EXPOSE 8080`). No frontend Dockerfile or compose file in v1.0.
 
 ```text
 ┌───────────────────────┐
-│   Frontend Container  │
-│       React           │
+│   Frontend (Vite)     │
+│   static dist/ host   │
 └───────────┬───────────┘
             │
             ▼
@@ -644,262 +631,128 @@ Example architecture:
 
 ---
 
-# 🚢 Deployment
+<h2 align="center">Deployment</h2>
 
-The intended deployment architecture consists of:
+<p align="center"><img src="documents/latex/diagrams/deployment.png" alt="Deployment"></p>
 
-```text
-Users
-  │
-  ▼
-Frontend
-  │
-  ▼
-REST API
-  │
-  ▼
-Backend
-  │
-  ▼
-MySQL
-```
-
-Production deployment should include:
-
-- HTTPS
-- Secure environment variables
-- Database backups
-- Proper CORS configuration
-- Production JWT secrets
-- Logging
-- Monitoring
-- Error handling
-- Database migration management
-- CI/CD pipeline
+Verified development topology: MySQL `:3306` + `./mvnw spring-boot:run` on `:8080` +
+Vite on `:3000`. Production needs HTTPS, rotated secrets, managed MySQL with backups,
+versioned migrations, CORS allow-list, structured logging, monitoring, and rollback plan.
+No CI/CD (`.github/`) exists — builds/tests are manual (see `documents/.../cicd`).
 
 ---
 
-# 📋 Development Guidelines
+<h2 align="center">Development Guidelines</h2>
 
-When adding a new feature, follow the existing application layers:
+New features follow:
 
 ```text
-Database / Entity
-       ↓
-Repository
-       ↓
-Service
-       ↓
-Controller
-       ↓
-API Service
-       ↓
-Frontend Component
-       ↓
-Route / UI
-       ↓
-Tests
+Database / Entity → Repository → Service → Controller
+      → API Service (frontend/src/api) → Component → Route/Page → Tests
 ```
 
-### Backend
-
-Keep responsibilities separated:
-
-- Controllers handle HTTP requests.
-- Services contain business logic.
-- Repositories handle persistence.
-- Entities represent database models.
-- DTOs define API contracts.
-- Security components handle authentication and authorization.
-
-### Frontend
-
-Keep responsibilities separated:
-
-- Pages represent application screens.
-- Components provide reusable UI.
-- API modules handle backend communication.
-- Hooks manage reusable React logic.
-- Context/state handles shared application state.
+- Controllers handle HTTP; services own business logic; repositories own persistence.
+- Pages are screens; `components/` are reusable UI; `hooks/` hold reusable logic;
+  `context/` holds shared state.
+- Respect workstream ownership: `frontend/**` (Jay) vs `backend/**` + `database/**` (Ali);
+  shared files (`README.md`, `CONTRACT.md`, `.env.example`, API/schema contracts)
+  need cross-review. Full rules in `CONTRACT.md`.
 
 ---
 
-# 🛣️ Roadmap
+<h2 align="center">Security Considerations</h2>
 
-### Phase 1 — Core LMS
+Implemented: BCrypt hashing, signed expiring JWTs, server-side RBAC, Bean Validation,
+JPA-bound queries, non-leaking error envelopes, env-based secrets.
 
-- [x] Authentication
-- [x] User roles
-- [x] Course catalogue
-- [x] Course enrollment
-- [x] Learning content
-- [x] Progress tracking
-- [x] Assessments
+Must-haves before production: rotate `JWT_SECRET`, guard/remove `DataInitializer` demo
+seeds, add rate limiting + lockout, HTTPS + security headers, CORS review, audit logging,
+secret manager, and migration-based schema control. Sensitive values
+(`JWT_SECRET`, `DB_PASSWORD`, `ADMIN_PASSWORD`) must never be committed.
 
-### Phase 2 — Engagement
+---
 
-- [ ] Course discussions
-- [ ] Feedback and ratings
+<h2 align="center">Roadmap</h2>
+
+<h3 align="center">Phase 1 — Core LMS (implemented)</h3>
+
+- [x] Authentication (JWT) + user roles
+- [x] Course catalogue, details, enrollment (duplicate-safe)
+- [x] Learning content + lesson navigation
+- [x] Progress tracking (persisted, aggregated)
+- [x] Assessments with server-side scoring + results
+- [x] Discussions + feedback (already implemented)
+- [x] Certificates with eligibility verification
+- [x] Coding practice pages (static dataset, by design)
+
+<h3 align="center">Phase 2 — Engagement</h3>
+
 - [ ] Notifications
-- [ ] Learning analytics
-- [ ] Improved learner dashboard
+- [ ] Learning analytics + improved learner dashboard
+- [ ] Feedback/ratings polish
 
-### Phase 3 — Instructor Platform
+<h3 align="center">Phase 3 — Instructor Platform</h3>
 
-- [ ] Instructor dashboard
-- [ ] Course authoring
-- [ ] Lesson management
-- [ ] Assessment authoring
-- [ ] Learner performance analytics
+- [ ] Course authoring UX + lesson management polish
+- [ ] Assessment authoring + learner performance analytics
 
-### Phase 4 — Advanced Platform
+<h3 align="center">Phase 4 — Advanced Platform</h3>
 
 - [ ] Certificate verification
-- [ ] Advanced analytics
-- [ ] Search and filtering
-- [ ] Recommendation system
-- [ ] Email notifications
-- [ ] Password recovery
-- [ ] CI/CD
-- [ ] Production monitoring
-- [ ] Scalable deployment
+- [ ] Search/filtering, recommendations
+- [ ] Password recovery, email notifications
+- [ ] CI/CD, production monitoring, scalable deployment
+
+Explicitly out of v1.0 unless agreed (`CONTRACT.md` §5.2): payments, live classes,
+mobile app, AI tutoring/recommendations, SSO, multi-tenancy, offline-first.
 
 ---
 
-# 🔐 Security Considerations
+<h2 align="center">Known Issues &amp; Technical Debt</h2>
 
-Security is a core part of the system design.
+Summary (full register in the PDF §§ Known Issues / Technical Debt):
 
-The production system should implement:
+- Certificate grade `DISTINCTION` vs column default `PASS` (cosmetic).
+- Quiz percentage denominator counts only submitted questions.
+- README roadmap previously drifted vs implemented discussions/feedback (reconciled here).
+- Unguarded seed users; `ddl-auto: update` without versioned migrations; no CI gates;
+  JWT without revocation; unbounded list endpoints.
 
-- Strong password hashing
-- JWT security
-- Role-based authorization
-- Object-level authorization
-- Input validation
-- Secure HTTP headers
-- HTTPS
-- Rate limiting
-- Secure CORS configuration
-- Secret management
-- SQL injection protection
-- Audit logging
-- Secure file handling
+---
 
-Sensitive values such as:
+<h2 align="center">Contributing</h2>
 
 ```text
-JWT_SECRET
-DB_PASSWORD
-ADMIN_PASSWORD
+Create Branch → Implement → Write Tests → Run Tests
+     → Review → Create Pull Request → Code Review → Merge
 ```
 
-must never be committed to Git.
+- Branch from workstream: `frontend/...` or `backend/...`; never develop on `main`.
+- PRs include summary, changes, files, tests, expected behavior, known issues.
+- Follow conventional commits (`feat(frontend): …`, `fix(backend): …`).
+- Run `./mvnw test` and `npm test` before every PR; keep shared-contract changes reviewed.
 
 ---
 
-# 📊 Future Enhancements
+<h2 align="center">License</h2>
 
-Potential future improvements include:
-
-- AI-powered course recommendations
-- Personalized learning paths
-- Intelligent performance analysis
-- Automated instructor insights
-- Advanced learner analytics
-- Gamification
-- Badges and achievements
-- Mobile application
-- Real-time notifications
-- Live classes
-- Payment integration
-- Multi-language support
-
-These are future possibilities and are **not considered implemented features unless they are actually added to the codebase**.
+This project is licensed under the **MIT License** (no root `LICENSE` file is currently
+checked in — adding one is recommended).
 
 ---
 
-# 🤝 Contributing
+<h2 align="center">Project</h2>
 
-Contributions are welcome.
+**Project:** Learning Management System (Edvanta) · **Type:** Full-Stack Web Application ·
+**Architecture:** Client–Server (three-tier) · **Frontend:** React 18 + Vite 6 ·
+**Backend:** Spring Boot 3.3.4 + Java 21 · **Database:** MySQL 8 · **Auth:** JWT · **API:** REST `/api/v1`
 
-### Workflow
+<h2 align="center">Documentation</h2>
 
-```text
-Create Branch
-     ↓
-Implement Feature
-     ↓
-Write Tests
-     ↓
-Run Tests
-     ↓
-Review Changes
-     ↓
-Create Pull Request
-     ↓
-Code Review
-     ↓
-Merge
-```
-
-Use focused commits and avoid mixing unrelated changes in the same pull request.
-
----
-
-# 📄 License
-
-This project is licensed under the **MIT License**.
-
----
-
-# 👨‍💻 Project
-
-**Project:** Learning Management System
-
-**Type:** Full-Stack Web Application
-
-**Architecture:** Client–Server
-
-**Frontend:** React
-
-**Backend:** Spring Boot
-
-**Database:** MySQL
-
-**Authentication:** JWT
-
-**API:** REST
-
----
-
-## 📚 Documentation
-
-Detailed project documentation should cover:
-
-- Project Overview
-- Business Requirements
-- Product Requirements
-- Functional Requirements
-- Non-Functional Requirements
-- Technical Requirements
-- System Architecture
-- Software Architecture
-- High-Level Design
-- Low-Level Design
-- Database Design
-- API Documentation
-- Authentication
-- Authorization
-- User Flows
-- Data Flows
-- UI/UX
-- Security
-- Testing
-- Deployment
-- CI/CD
-- Known Issues
-- Technical Debt
-- Development Guidelines
-- Contribution Guide
-- Roadmap
+Full suite: [`documents/output/FSJP_LMS-Complete-Documentation.pdf`](documents/output/FSJP_LMS-Complete-Documentation.pdf) —
+Project Overview · Business / Product / Functional / Non-Functional / Technical Requirements ·
+System / Software Architecture · HLD / LLD · Database Design · API · Authentication /
+Authorization · User & Data Flows · UI/UX · Design System · Security · Performance /
+Scalability · Testing · Deployment · CI/CD · Integrations · Configuration · SEO/AEO/GEO ·
+Known Issues · Technical Debt · Roadmap · Development & Contribution Guides · Glossary.
+Engineering source of truth: [`CONTRACT.md`](CONTRACT.md).

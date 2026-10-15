@@ -1,0 +1,15 @@
+\babel@toc {english}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Implemented product workflow -- learning lifecycle across the three roles}}{7}{figure.caption.8}%
+\contentsline {figure}{\numberline {2}{\ignorespaces System architecture at a glance}}{11}{figure.caption.10}%
+\contentsline {figure}{\numberline {3}{\ignorespaces System architecture -- runtime components and external dependencies}}{37}{figure.caption.34}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Backend software modules and their dependency direction}}{40}{figure.caption.36}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Frontend component architecture and data flow to the API}}{43}{figure.caption.40}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Authentication and authorisation control flow}}{46}{figure.caption.43}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Quiz submission sequence -- server-side authoritative scoring}}{47}{figure.caption.44}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Entity-relationship diagram of the 13 LMS tables}}{59}{figure.caption.56}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Authentication flow -- register, login, JWT issuance, per-request validation}}{66}{figure.caption.59}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Learning lifecycle -- registration through certificate}}{69}{figure.caption.61}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Quiz submission sequence -- client attempt, server validation, persisted result}}{70}{figure.caption.62}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Backend layering that every data flow traverses -- controller, service, repository}}{72}{figure.caption.63}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Deployment view -- the only containerised component is the backend JAR}}{76}{figure.caption.65}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Certificate eligibility -- the gate all roadmap completion work must preserve}}{82}{figure.caption.68}%

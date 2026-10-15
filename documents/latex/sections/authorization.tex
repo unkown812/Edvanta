@@ -1,0 +1,35 @@
+\section{Authorization}
+\label{sec:authorization}
+
+\subsection{Model}
+\status{IMPLEMENTED}
+
+Role-based access control with three roles stored in \code{users.role} (\pathref{database/schema.sql}, default \code{LEARNER}): \code{LEARNER}, \code{INSTRUCTOR}, \code{ADMIN}. Enforcement is server-side via Spring Security method annotations; the frontend mirrors the same rules for UX only through \pathref{frontend/src/routes/ProtectedRoute.jsx} and \pathref{frontend/src/routes/AppRoutes.jsx} (route guards are not a security boundary -- CONTRACT.md section 13).
+
+\subsection{Authorization matrix}
+\status{IMPLEMENTED}
+
+\begin{table}[H]
+\centering
+\caption{Authorization matrix (backend-enforced; frontend mirrors for UX)}
+\label{tab:authz-matrix}
+\begin{tabular}{@{}L{5.2cm}C{2.2cm}C{2.2cm}C{2.2cm}@{}}
+\toprule
+\textbf{Feature} & \textbf{Learner} & \textbf{Instructor} & \textbf{Admin} \\
+\midrule
+Browse / view courses & Yes & Yes & Yes \\
+Enroll in courses & Yes & -- & Yes \\
+Access lessons / track own progress & Yes & Yes (own) & Yes \\
+Take quiz / view own results & Yes & -- & Yes \\
+Create / edit / delete own course & -- & Yes & Yes \\
+Manage questions and quizzes & -- & Yes & Yes \\
+View learner performance & -- & Yes (own courses) & Yes \\
+Participate in discussions & Yes & Yes & Yes \\
+Submit feedback & Yes & -- & -- \\
+Manage users / instructors / all courses & -- & -- & Yes \\
+Access admin dashboard & -- & -- & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Ownership checks (e.g.\ instructor may modify only own courses) are performed in service-layer code. Known service-level gaps are recorded as PARTIAL in Section~\ref{sec:security}.
