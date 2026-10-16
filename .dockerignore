@@ -11,3 +11,4 @@ backend/target/
 .idea/
 documents/output/
 images/
+render.yaml

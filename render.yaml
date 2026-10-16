@@ -1,0 +1,64 @@
+# Render Blueprint — Edvanta LMS full stack (app + MySQL 8).
+#
+# Deploy: Dashboard -> New -> Blueprint -> select this repo.
+# Render creates both services below, generates DB_PASSWORD / JWT_SECRET /
+# MYSQL_ROOT_PASSWORD automatically, and wires DB_PASSWORD into the web
+# service from the MySQL service (kept in sync on regeneration).
+#
+# Notes:
+# - The `mysql` private service is reachable ONLY inside your Render private
+#   network at hostname `mysql`, port 3306 (no public internet exposure).
+# - Data persists on the 10 GB SSD disk mounted at /var/lib/mysql
+#   (daily snapshots included). Do not change the mount path.
+# - Disks require a paid instance type, so set plan to starter or higher.
+# - First boot: Hibernate `ddl-auto: update` auto-creates the 13 tables.
+#   To load sample data afterwards, open a Shell on the `edvanta` service and run:
+#     mysql -h mysql -u "$DB_USERNAME" -p"$DB_PASSWORD" lms < /app/database/seed.sql
+# - Frontend needs no extra config: it calls same-origin /api/*, which nginx
+#   proxies to Spring Boot inside the container.
+
+services:
+  # --- Full-stack app (Vite SPA + Spring Boot API, single container) ---
+  - type: web
+    name: edvanta
+    runtime: docker
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql:3306/lms?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - key: DB_USERNAME
+        value: lms
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: mysql
+          envVarKey: MYSQL_PASSWORD
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 86400000
+
+  # --- MySQL 8, private + persistent ---
+  - type: pserv
+    name: mysql
+    runtime: image
+    image:
+      url: docker.io/library/mysql:8.0
+    plan: starter
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+    envVars:
+      - key: MYSQL_DATABASE
+        value: lms
+      - key: MYSQL_USER
+        value: lms
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
