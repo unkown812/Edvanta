@@ -1,0 +1,13 @@
+.git/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+backend/target/
+*.log
+.env
+.env.*.local
+.vscode/
+.idea/
+documents/output/
+images/
