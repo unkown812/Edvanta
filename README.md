@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/banner.svg" alt="Edvanta — Learn Your Way banner" width="100%">
+</p>
+
 <h1 align="center">Learning Management System — Edvanta</h1>
 
 <p align="center">
@@ -6,7 +10,8 @@ assessments, progress tracking, and administration — with secure JWT authentic
 role-based access for <strong>Learners, Instructors, and Administrators</strong>.
 </p>
 
-> **Complete documentation:** [`documents/output/FSJP_LMS-Complete-Documentation.pdf`](documents/output/Edvanta-Complete-Documentation.pdf)
+> **Complete documentation:** [`documents/output/Edvanta-Complete-Documentation.pdf`](documents/output/Edvanta-Complete-Documentation.pdf)
+=======
 > (96-page evidence-based suite: BRD, PRD, functional / non-functional / technical requirements,
 > system & software architecture, HLD, LLD, API, auth, security, testing, deployment, roadmap, glossary.)
 > Sources live in [`documents/latex/`](documents/latex/) with diagrams in [`documents/latex/diagrams/`](documents/latex/diagrams/).
@@ -22,6 +27,7 @@ role-based access for <strong>Learners, Instructors, and Administrators</strong>
 
 <h2 align="center">Table of Contents</h2>
 - [Overview](#overview)
+- [Screenshots](#screenshots)
 - [Objectives](#objectives)
 - [User Roles](#user-roles)
 - [Core Features](#core-features)
@@ -82,6 +88,100 @@ Certificate
 
 Each user type gets the features relevant to their responsibilities, enforced **server-side**
 by Spring Security — frontend route guards are UX-only (see `CONTRACT.md` §13).
+
+---
+
+<h2 align="center">Screenshots</h2>
+
+> Full application tour in journey order: landing → auth → learner → instructor.
+> Branding assets: [`images/banner.svg`](images/banner.svg) (README banner),
+> [`images/logo.png`](images/logo.png) (app icon), [`images/logotype.png`](images/logotype.png) (wordmark).
+
+<h3 align="center">Landing — Home</h3>
+
+**1. Hero — "Empower your future with structured learning and verified credentials"**
+
+![Home hero](images/01-home-hero.jpeg)
+
+**2. Hero (scrolled) with platform intro peeking below**
+
+![Home hero scrolled](images/02-home-hero-scrolled.jpeg)
+
+**3. Platform features — curriculum, assessments, certificates**
+
+![Home features](images/03-home-features.jpeg)
+
+**4. How it works — Learn / Assess / Certify**
+
+![Home how it works](images/04-home-how-it-works.jpeg)
+
+**5. Featured courses catalogue grid**
+
+![Home featured courses](images/05-home-featured-courses.jpeg)
+
+**6. Footer call-to-action + site footer**
+
+![Home footer CTA](images/06-home-footer-cta.jpeg)
+
+<h3 align="center">Authentication</h3>
+
+**7. Sign in — "Welcome Back" / "Log in to Edvanta"**
+
+![Sign in](images/07-auth-signin.jpeg)
+
+<h3 align="center">Learner workspace</h3>
+
+**8. Learner dashboard — enrolled / in-progress / completed / certificates stats**
+
+![Learner dashboard](images/08-learner-dashboard.jpeg)
+
+**9. Learner "Your courses" library with live progress**
+
+![Learner my courses](images/09-learner-my-courses.jpeg)
+
+**10. Course classroom — video player, curriculum checklist, 100% progress**
+
+![Course classroom](images/10-learner-classroom.jpeg)
+
+**11. Course certificate modal with credential ID + print/save**
+
+![Course certificate](images/11-learner-certificate.jpeg)
+
+**12. Learner profile & settings**
+
+![Learner profile settings](images/12-learner-profile-settings.jpeg)
+
+<h3 align="center">Instructor studio</h3>
+
+**13. Instructor hub — course management & curriculum directory**
+
+![Instructor hub](images/13-instructor-hub.jpeg)
+
+**14. Manage course content — lessons table**
+
+![Manage lessons](images/14-instructor-manage-lessons.jpeg)
+
+**15. Manage course content — assessments / quizzes table**
+
+![Manage assessments](images/15-instructor-manage-assessments.jpeg)
+
+**16. "Add Lesson" dialog — title, objectives, duration, video URL, notes**
+
+![Add lesson modal](images/16-instructor-add-lesson-modal.jpeg)
+
+**17. "Create Assessment" dialog — questions, options, correct answer, points**
+
+![Create assessment](images/17-instructor-create-assessment.jpeg)
+
+<h3 align="center">Catalogue & account</h3>
+
+**18. Explore course catalogue — search + category filter (12 courses)**
+
+![Catalogue explore](images/18-catalogue-explore.jpeg)
+
+**19. Instructor profile & settings**
+
+![Instructor profile settings](images/19-instructor-profile-settings.jpeg)
 
 ---
 
