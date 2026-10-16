@@ -50,8 +50,9 @@ RUN ./mvnw -B clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# nginx serves the SPA; gettext provides envsubst for $PORT injection.
-RUN apk add --no-cache nginx gettext \
+# nginx serves the SPA; gettext provides envsubst for $PORT injection;
+# mysql-client provides mysqladmin (DB readiness wait) + mysql CLI (seeding via Shell).
+RUN apk add --no-cache nginx gettext mysql-client \
   && mkdir -p /usr/share/nginx/html /var/log/nginx /var/lib/nginx/tmp \
   && rm -f /etc/nginx/conf.d/default.conf \
   && touch /tmp/nginx.pid
@@ -59,6 +60,10 @@ RUN apk add --no-cache nginx gettext \
 # Backend jar + frontend static assets.
 COPY --from=backend-build /app/backend/target/lms-backend-1.0.0.jar /app/app.jar
 COPY --from=frontend-build /app/frontend/dist/ /usr/share/nginx/html/
+
+# SQL files for optional manual seeding via Render Shell, e.g.:
+#   mysql -h mysql -u "$DB_USERNAME" -p"$DB_PASSWORD" lms < /app/database/seed.sql
+COPY database/ /app/database/
 
 # Nginx template ($PORT/$BACKEND_PORT substituted at startup) + start script.
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
