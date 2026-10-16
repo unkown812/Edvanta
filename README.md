@@ -11,7 +11,6 @@ role-based access for <strong>Learners, Instructors, and Administrators</strong>
 </p>
 
 > **Complete documentation:** [`documents/output/Edvanta-Complete-Documentation.pdf`](documents/output/Edvanta-Complete-Documentation.pdf)
-=======
 > (96-page evidence-based suite: BRD, PRD, functional / non-functional / technical requirements,
 > system & software architecture, HLD, LLD, API, auth, security, testing, deployment, roadmap, glossary.)
 > Sources live in [`documents/latex/`](documents/latex/) with diagrams in [`documents/latex/diagrams/`](documents/latex/diagrams/).
@@ -849,7 +848,7 @@ checked in — adding one is recommended).
 
 <h2 align="center">Documentation</h2>
 
-Full suite: [`documents/output/FSJP_LMS-Complete-Documentation.pdf`](documents/output/FSJP_LMS-Complete-Documentation.pdf) —
+Full suite: [`documents/output/Edvanta-Complete-Documentation.pdf`](documents/output/Edvanta-Complete-Documentation.pdf) —
 Project Overview · Business / Product / Functional / Non-Functional / Technical Requirements ·
 System / Software Architecture · HLD / LLD · Database Design · API · Authentication /
 Authorization · User & Data Flows · UI/UX · Design System · Security · Performance /
