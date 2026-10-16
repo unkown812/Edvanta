@@ -11,6 +11,7 @@ role-based access for <strong>Learners, Instructors, and Administrators</strong>
 </p>
 
 > **Complete documentation:** [`documents/output/Edvanta-Complete-Documentation.pdf`](documents/output/Edvanta-Complete-Documentation.pdf)
+=======
 > (96-page evidence-based suite: BRD, PRD, functional / non-functional / technical requirements,
 > system & software architecture, HLD, LLD, API, auth, security, testing, deployment, roadmap, glossary.)
 > Sources live in [`documents/latex/`](documents/latex/) with diagrams in [`documents/latex/diagrams/`](documents/latex/diagrams/).
